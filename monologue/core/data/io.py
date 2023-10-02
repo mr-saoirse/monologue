@@ -4,12 +4,25 @@ Some helpers and wrappers
 import polars as pl
 import s3fs
 import pyarrow.dataset as ds
+from typing import Union, List
+from functools import partial
+
+def get_filesystem(uri):
+    fs = None if uri[:5] != 's3://' else s3fs.S3FileSystem()
+    return fs #if none we could return something like an interface
+
+def _get_writer(df, uri=None):
+    """
+    the writer is determined from the uri and defaults to parquet
+    """
+    #TODO generalize / assume parquet for now for our usecase
+    return partial(df.write_parquet)
 
 def read_dataset(uri) -> ds.Dataset:
     fs = None if uri[:5] != 's3://' else s3fs.S3FileSystem()
     return ds.dataset(uri, filesystem=fs)
 
-def read(uri, lazy=False):
+def read(uri, lazy=False) -> pl.DataFrame:
     """
     read data to polar data
     """
@@ -19,17 +32,51 @@ def read(uri, lazy=False):
     
     return pl.from_arrow(dataset.to_table())
 
-def write(uri,  data ):
-    """
-    write data from polar data
-    """
+def read_if_exists(uri, **kwargs):
+    #TODO: add some s3 clients stuff
+    try:
+        # fs = get_filesystem()
+        # if fs and not fs.exists(uri):
+        #     return None
+        return read(uri=uri, **kwargs)
+    except:
+        return None
+
     
-    pass 
+def write(uri,   data : Union[pl.DataFrame, List[dict]] ):
+    """
+    write data from polar data to format=parquet
+    """
+    if not isinstance(data, pl.DataFrame ):
+        #assume the data are dicts or pydantic objects
+        data = pl.DataFrame([d.dict() if hasattr(d,'dict') else d for d in data])
+        
+    fs = None if uri[:5] != 's3://' else s3fs.S3FileSystem()
+ 
+    fn = _get_writer(data, uri)
+    if fs:
+        with fs.open(uri, 'wb') as f:
+            fn(f)
+    else:        
+        #we never really do this because we are always floating in the cloud
+        fn(uri)
+    
+    return read_dataset(uri)
 
 
-def merge(uri,  data, key ):
+def merge(uri: str,  data : Union[pl.DataFrame, List[dict]], key:str ) -> ds.Dataset:
     """
     merge data from polar data using key
     """
+    existing = read_if_exists(uri)
+       
+    if not isinstance(data, pl.DataFrame ):
+        #assume the data are dicts or pydantic objects
+        data = pl.DataFrame([d.dict() if hasattr(d,'dict') else d for d in data])
+    if existing is not None:
+        data = pl.concat([existing,data])
     
-    pass    
+    write(uri, data.unique(subset=[key], keep='last'))   
+    
+    return read_dataset(uri)
+    
