@@ -47,6 +47,13 @@ class AvengingPassengers(AbstractEntity):
     uri: Optional[str] 
     text: str = Field(long_text=True)
     
+class AvengingPassengersInstruct(AbstractEntity):
+    name: str = Field(is_key=True)
+    gender: Optional[str]
+    appearances: Optional[int]
+    uri: Optional[str] 
+    text: str = Field(long_text=True)
+    
     
 class Places(AbstractEntity):
     name: str = Field(is_key=True)

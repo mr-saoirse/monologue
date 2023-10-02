@@ -8,7 +8,11 @@ app = typer.Typer()
 
 @app.command("test")
 def run_method( message:str = typer.Option(None, "--message", "-m"),):
-     logger.log('MEM', message)
+     """
+     Method to test the logging output
+     """
+     
+     logger.log('EVENT', message)
 
      from monologue.entities import AbstractEntity
      from pydantic import Field
@@ -17,7 +21,7 @@ def run_method( message:str = typer.Option(None, "--message", "-m"),):
           created_at: str
 
      my_entity = MyEntity(code='test', created_at= "2023-01-01")
-     logger.log("MEM", f"{message}  {my_entity=}")
+     logger.log("EVENT", f"{message}  {my_entity=}")
 
     
 if __name__ == "__main__":

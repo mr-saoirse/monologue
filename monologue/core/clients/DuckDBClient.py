@@ -58,7 +58,6 @@ class _query:
 class DuckDBClient:
     def __init__(self, **options):
         self._cursor = duckdb.connect()
- 
         AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
         AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
 
@@ -94,7 +93,7 @@ class DuckDBClient:
         """
  
         """
-        return self._cursor.execute(query).fetchdf()
+        return self._cursor.execute(query).pl()
 
     def query_from_root(self, root):
         root = root.rstrip("/")

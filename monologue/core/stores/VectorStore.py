@@ -2,18 +2,24 @@ from llama_index.langchain_helpers.agents import IndexToolConfig, LlamaIndexTool
 from langchain.agents import Tool
 from langchain.chat_models import ChatOpenAI
 from langchain.vectorstores import LanceDB
-from langchain.document_loaders import DataFrameLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import OpenAIEmbeddings
+from langchain.embeddings import OpenAIEmbeddings,HuggingFaceInstructEmbeddings
 from langchain.chains import RetrievalQA
-from monologue.entities import AbstractEntity, Union
+from monologue.entities import AbstractEntity 
 from typing import List
-import pandas as pd
-from monologue.core.clients import LanceDBClient
+from monologue.core.data.vectors import LanceDataSet
 from . import AbstractStore 
 from monologue import S3BUCKET, logger
 
-VECTOR_STORE_ROOT_URI = f"s3://{S3BUCKET}/stores/vector/v0"
+def get_instruct_function():
+    embeddings = HuggingFaceInstructEmbeddings(
+        query_instruction="Represent the query for retrieval: "
+    )
+    
+    def _f(text):
+        query_result = embeddings.embed_query(text)
+        return query_result
+
+    return _f
 
 class VectorDataStore(AbstractStore):
     """
@@ -34,56 +40,51 @@ class VectorDataStore(AbstractStore):
     def __init__(
         self,
         entity,
+        sep='_'
     ):
         super().__init__(entity=entity)
-        self._db = LanceDBClient(uri_root=VECTOR_STORE_ROOT_URI)
-        self._embeddings = OpenAIEmbeddings()
+        self._full_entity_name = f"{self._entity.get_namespace(entity)}{sep}{self._entity.get_entity_name(entity)}"
+        self._dataset = LanceDataSet(name=self._full_entity_name)
+        #self._embeddings = OpenAIEmbeddings()
+        self._embeddings = HuggingFaceInstructEmbeddings(
+            query_instruction="Represent the query for retrieval: "
+        )
+        self._langchain_lance_db = LanceDB(self._dataset.get_db_table(), self._embeddings)
         self._table_name =   f"{self._entity_namespace}_{self._entity_name}"
-        
-    def add(self, records: Union[List[AbstractEntity], pd.DataFrame]):
+         
+    def add(self, records: List[AbstractEntity]):
         """
         loads data into the vector store if there is any big text in there
         """
-        if not isinstance(records,pd.DataFrame):
-            records = [r.large_text_dict() for r in records]
-            records = [r for r in records if len(r)]
-            records = pd.DataFrame(records)
- 
+        def add_embedding_vector(d):
+            d['vector'] = self._embeddings.embed_query(d['text'])
+            return d
         if len(records):
-            logger.info(f"Adding {len(records)} to {VECTOR_STORE_ROOT_URI}/{self._table_name}...")
-            if len(records):
-                self._db.ingest_text_data_store(
-                    records,
-                    table_name=self._table_name,
-                    embeddings=self._embeddings
-                )
+            logger.info(f"Adding {len(records)} to {self._table_name}...")
+            records_with_embeddings = [add_embedding_vector(r.large_text_dict()) for r in records]
+            self._dataset.upsert_records(records_with_embeddings)
         return records
 
-    def load(self) -> pd.DataFrame:
+    def load(self):
         """
         Loads the lance data backed by s3 parquet files         
         """
-        return self._db.load(self._table_name).to_pandas()
+        return self._dataset.load()
+    
+    def __call__(self, question):
+        return self.as_tool().run(question)
+                
 
-    def as_tool(self, text_column='text', model='gpt-4', debug_db=False):
+    def as_tool(self,model='gpt-4'):
         """
         provides a tool over the data
         hard coding text field for now
         """
-        table, df = self._db.ingest_text_data_store(
-            None, table_name=self._table_name, embeddings=self._embeddings, text_column=text_column
-        )
-        loader = DataFrameLoader(df, page_content_column=text_column)
-        documents = RecursiveCharacterTextSplitter(chunk_size=1000).split_documents(loader.load())
-        docsearch = LanceDB.from_documents(documents, self._embeddings, connection=table)
-        
-        if debug_db:
-            return docsearch
         
         qa = RetrievalQA.from_chain_type(
             llm=ChatOpenAI(model_name=model, temperature=0.0),
             chain_type="stuff",
-            retriever=docsearch.as_retriever(),
+            retriever=self._langchain_lance_db.as_retriever(),
         )
 
         return Tool(

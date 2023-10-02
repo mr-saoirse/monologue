@@ -2,7 +2,7 @@ from langchain.agents import Tool
 from langchain.chat_models import ChatOpenAI
 from monologue.entities import AbstractEntity, List, Union
 from monologue import S3BUCKET
-from monologue.core.clients import S3Client, DuckDBClient
+from monologue.core.clients import   DuckDBClient
 import pandas as pd
 from . import AbstractStore
 from monologue import logger
@@ -24,7 +24,6 @@ class ColumnarDataStore(AbstractStore):
         super().__init__(entity=entity)
         self._entity = entity
         self._db = DuckDBClient()
-        self._s3 = S3Client()
         self._table_path = f"{COLUMN_STORE_ROOT_URI}/{self._entity_name}/{self._entity_namespace}/parts/0/data.parquet"
         #base class
         self._extra_context = extra_context
