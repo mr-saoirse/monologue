@@ -4,8 +4,6 @@ from monologue import logger
 
 app = typer.Typer()
 
- 
-
 @app.command("test")
 def run_method( message:str = typer.Option(None, "--message", "-m"),):
      """

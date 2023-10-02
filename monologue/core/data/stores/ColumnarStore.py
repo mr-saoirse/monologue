@@ -2,7 +2,7 @@ from langchain.agents import Tool
 from langchain.chat_models import ChatOpenAI
 from monologue.entities import AbstractEntity, List, Union
 from monologue import S3BUCKET
-from monologue.core.clients import   DuckDBClient
+from monologue.core.data.clients import DuckDBClient
 import pandas as pd
 from . import AbstractStore
 from monologue import logger

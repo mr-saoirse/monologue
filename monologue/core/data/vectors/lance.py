@@ -11,7 +11,7 @@ https://lancedb.github.io/lance/notebooks/quickstart.html
 
 from monologue import S3BUCKET
 import lance
-from monologue.core.clients import DuckDBClient
+from monologue.core.data.clients import DuckDBClient
 import pyarrow as pa
 import typing
 
