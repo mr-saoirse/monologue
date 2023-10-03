@@ -31,6 +31,10 @@ class AbstractEntity(BaseModel):
         s = cls.schema()
         return s['title']
     
+    def get_full_entity_name(cls, sep='_'):
+        return f"{cls.get_namespace()}{sep}{cls.get_entity_name()}"    
+    
+    
     def get_key_field(cls):
         s = cls.schema()
         key_props = [k  for k,v in s['properties'].items() if v.get('is_key')]

@@ -1,13 +1,15 @@
 from datetime import datetime
-from .. import AbstractEntity, Optional, Field
+from .. import AbstractEntity, Optional, Field, List
 
+INSTRUCT_EMBEDDING_VECTOR_LENGTH = 768
+OPEN_AI_EMBEDDING_VECTOR_LENGTH = None
 class NycTripEvent(AbstractEntity):
     """
     use NYC data see notebook sample to fetch
     ask questions from the tool such as 
     1. How many times has Lyra been dropped off to Lenox Hill West
     2. Who has been to Carroll Gardens most often? How many times have they gone. List all their trips and then tell me when they went last
-    3. "Where are the last three places JohnWalker has gone?" #purposeful use a variant of the name to exploit enums 
+    3. Where are the last three places JohnWalker has gone?" #purposeful use a variant of the name to exploit enums 
     4. How many times as the trip not been paid for? #requires inferring the enumeration of payment types
     5. Do people pay more often by credit card or cash when going to carroll gardens?
     6. What is least popular destination in new york city?
@@ -42,12 +44,35 @@ class NycTripEvent(AbstractEntity):
     
 class AvengingPassengers(AbstractEntity):
     name: str = Field(is_key=True)
+    id: Optional[str]
     gender: Optional[str]
     appearances: Optional[int]
     uri: Optional[str] 
+    doc_id: Optional[str] 
     text: str = Field(long_text=True)
+    vector:  Optional[List[float]]  = Field(embedding_vector_length=OPEN_AI_EMBEDDING_VECTOR_LENGTH) 
     
+class AvengingPassengersInstruct(AvengingPassengers):
+    name: str = Field(is_key=True)
+    id: Optional[str]
+    gender: Optional[str]
+    appearances: Optional[int]
+    uri: Optional[str] 
+    doc_id: Optional[str] 
+    text: str = Field(long_text=True)
+    vector:  Optional[List[float]]  = Field(embedding_vector_length=INSTRUCT_EMBEDDING_VECTOR_LENGTH) 
     
+
 class Places(AbstractEntity):
     name: str = Field(is_key=True)
     text: str = Field(long_text=True)
+    doc_id: Optional[str] 
+    vector: Optional[List[float]] = Field(embedding_vector_length=INSTRUCT_EMBEDDING_VECTOR_LENGTH) 
+    id: Optional[str]
+    
+class PlacesInstruct(AbstractEntity):
+    name: str = Field(is_key=True)
+    text: str = Field(long_text=True)
+    doc_id: Optional[str] 
+    vector: Optional[List[float]] = Field(embedding_vector_length=INSTRUCT_EMBEDDING_VECTOR_LENGTH) 
+    id: Optional[str]

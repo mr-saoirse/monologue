@@ -2,10 +2,11 @@ from langchain.agents import Tool
 from langchain.chat_models import ChatOpenAI
 from monologue.entities import AbstractEntity, List, Union
 from monologue import S3BUCKET
-from monologue.core.clients import S3Client, DuckDBClient
+from monologue.core.data.clients import DuckDBClient
 import pandas as pd
 from . import AbstractStore
 from monologue import logger
+from monologue.core.data.io import merge,read,get_query_context
 
 COLUMN_STORE_ROOT_URI = f"s3://{S3BUCKET}/stores/columnar/v0"
 
@@ -24,14 +25,24 @@ class ColumnarDataStore(AbstractStore):
         super().__init__(entity=entity)
         self._entity = entity
         self._db = DuckDBClient()
-        self._s3 = S3Client()
         self._table_path = f"{COLUMN_STORE_ROOT_URI}/{self._entity_name}/{self._entity_namespace}/parts/0/data.parquet"
         #base class
         self._extra_context = extra_context
 
     def load(self):
         return self._s3.read(self._table_path)
+    
+    def __call__(self, question):
+        return self.as_tool().run(question)
+    
+    @property
+    def query_context(self):
+        return get_query_context(self._table_path, name=self._entity_name)
 
+    def query(self, query):
+        ctx = self.query_context
+        return ctx.execute(query).collect()
+    
     def as_tool(
         self,
         return_type="dict",
@@ -66,7 +77,7 @@ class ColumnarDataStore(AbstractStore):
                 if limit_table_rows:
                     data = data[:limit_table_rows]
                 if return_type == "dict":
-                    return data.to_dict("records")
+                    return data.to_dicts()
                 return data
             #TODO better LLM and Duck exception handling
             except Exception as ex:
@@ -84,17 +95,13 @@ class ColumnarDataStore(AbstractStore):
         )
 
 
-    def add(self, records: Union[List[AbstractEntity], pd.DataFrame]):
+    def add(self, records: List[AbstractEntity]):
         """
         Add the fields configured on the Pydantic type that are columnar - defaults all
         These are merged into parquet files on some path in the case of this tool
         """
-        if not isinstance(records, pd.DataFrame):
-            records = [r.columnar_dict() for r in records]
-            records = [r for r in records if len(r)]
-            records = pd.DataFrame(records)
-        
+ 
         if len(records):
             logger.info(f"Writing {self._table_path}. {len(records)} records. Merge will be on key[{self._key_field}]")
-            return self._s3.merge_records(self._table_path, records, key=self._key_field)
+            return merge(self._table_path, records, key=self._key_field)
         return records

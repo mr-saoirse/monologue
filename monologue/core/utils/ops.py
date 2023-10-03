@@ -7,7 +7,50 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from langchain.chat_models import ChatOpenAI
+#deprecate as a dep
 import pandas as pd
+import pyarrow as pa
+import typing
+
+def pydantic_to_pyarrow_schema(model_class):
+    """
+    Convert a Pydantic model into a PyArrow schema in a very simplistic sort of way
+    
+    Args:
+        model_class: A Pydantic model class.
+
+    Returns:
+        pyarrow.Schema: The corresponding PyArrow schema.
+    """
+    
+    INSTRUCT_EMBEDDING_VECTOR_LENGTH = 768
+    #OPEN_AI
+    mapping = { int: pa.int64(),
+                float: pa.float64(),
+                str: pa.string(),
+                bool: pa.bool_(),
+                bytes: pa.binary(),
+                list: pa.list_(pa.null()),
+                dict: pa.map_(pa.string(), pa.null()),
+                #TODO: this is temporary: there is a difference between these embedding vectors and other stuff
+                typing.List[int] : pa.list_(pa.int64(), list_size=INSTRUCT_EMBEDDING_VECTOR_LENGTH ),
+                typing.List[float] : pa.list_(pa.float32(), list_size=INSTRUCT_EMBEDDING_VECTOR_LENGTH ),
+                None :pa.null()}
+    
+    fields = []
+    
+    for field_name, field_info in model_class.__annotations__.items():
+        if hasattr(field_info, "__annotations__"):
+            field_type = pydantic_to_pyarrow_schema(field_info)
+        else:
+            if getattr(field_info, "__origin__", None) is not None:
+                field_info = field_info.__args__[0]
+            field_type = mapping[field_info]
+        
+        field = pa.field(field_name, field_type)
+        fields.append(field)
+    
+    return pa.schema(fields)
 
 def scrape_html_paragraphs(uri):
     """
@@ -17,7 +60,7 @@ def scrape_html_paragraphs(uri):
         response = requests.get(uri)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
-            title = soup.title.string
+            #title = soup.title.string
             paragraphs = soup.find_all('p')
             text_paragraphs = [p.get_text() for p in paragraphs]
             cleaned_text = '\n'.join(text_paragraphs)
