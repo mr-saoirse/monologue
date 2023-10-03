@@ -10,7 +10,7 @@ from langchain.chat_models import ChatOpenAI
 #deprecate as a dep
 import pandas as pd
 import pyarrow as pa
- 
+import typing
 
 def pydantic_to_pyarrow_schema(model_class):
     """
@@ -23,6 +23,8 @@ def pydantic_to_pyarrow_schema(model_class):
         pyarrow.Schema: The corresponding PyArrow schema.
     """
     
+    INSTRUCT_EMBEDDING_VECTOR_LENGTH = 768
+    #OPEN_AI
     mapping = { int: pa.int64(),
                 float: pa.float64(),
                 str: pa.string(),
@@ -30,6 +32,9 @@ def pydantic_to_pyarrow_schema(model_class):
                 bytes: pa.binary(),
                 list: pa.list_(pa.null()),
                 dict: pa.map_(pa.string(), pa.null()),
+                #TODO: this is temporary: there is a difference between these embedding vectors and other stuff
+                typing.List[int] : pa.list_(pa.int64(), list_size=INSTRUCT_EMBEDDING_VECTOR_LENGTH ),
+                typing.List[float] : pa.list_(pa.float32(), list_size=INSTRUCT_EMBEDDING_VECTOR_LENGTH ),
                 None :pa.null()}
     
     fields = []

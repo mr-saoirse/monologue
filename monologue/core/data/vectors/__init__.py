@@ -1,1 +1,1 @@
-from .lance import LanceDataSet
+from .lance import LanceDataTable

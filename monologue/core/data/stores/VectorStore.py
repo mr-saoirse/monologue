@@ -1,75 +1,101 @@
-from llama_index.langchain_helpers.agents import IndexToolConfig, LlamaIndexTool
+"""
+wraps lancedb for LLM stuff.
+
+https://gpt-index.readthedocs.io/en/latest/examples/vector_stores/LanceDBIndexDemo.html
+
+"""
+
+#from llama_index.langchain_helpers.agents import IndexToolConfig, LlamaIndexTool
 from langchain.agents import Tool
 from langchain.chat_models import ChatOpenAI
 from langchain.vectorstores import LanceDB
+from llama_index.indices.vector_store import VectorStoreIndex
+from llama_index.vector_stores import LanceDBVectorStore
 from langchain.embeddings import OpenAIEmbeddings,HuggingFaceInstructEmbeddings
+from llama_index import ServiceContext
+from llama_index.embeddings import InstructorEmbedding as LLamaIndexInstructEmbedding
 from langchain.chains import RetrievalQA
 from monologue.entities import AbstractEntity 
 from typing import List
-from monologue.core.data.vectors import LanceDataSet
+from monologue.core.data.vectors import LanceDataTable
+from monologue import logger
+import warnings
 from . import AbstractStore 
-from monologue import S3BUCKET, logger
-
-def get_instruct_function():
-    embeddings = HuggingFaceInstructEmbeddings(
-        query_instruction="Represent the query for retrieval: "
-    )
-    
-    def _f(text):
-        query_result = embeddings.embed_query(text)
-        return query_result
-
-    return _f
 
 class VectorDataStore(AbstractStore):
     """
+    ***
     Vector store for infesting and query data
-    can be used as a tool
-
-    from res.learn.agents.data.VectorDataStore import VectorDataStore
-    store = VectorDataStore(<Entity>)
-    tool = store.as_tool()
-    tool.run("what is your question....")
-
-    #data = store.load()
-    
-    #store.add(data)
+    can be used as an agent tool to ask questions
+    ***
+    Example:
+        from res.learn.agents.data.VectorDataStore import VectorDataStore
+        store = VectorDataStore(<Entity>)
+        #tool = store.as_tool()
+        store("what is your question....")
+        #data = store.load()
+        #store.add(data)
 
     """
 
     def __init__(
         self,
         entity,
-        sep='_'
+        sep='_',
+        embeddings_provider='instruct'
     ):
         super().__init__(entity=entity)
         self._full_entity_name = f"{self._entity.get_namespace(entity)}{sep}{self._entity.get_entity_name(entity)}"
-        self._dataset = LanceDataSet(name=self._full_entity_name)
-        #self._embeddings = OpenAIEmbeddings()
-        self._embeddings = HuggingFaceInstructEmbeddings(
-            query_instruction="Represent the query for retrieval: "
-        )
-        self._langchain_lance_db = LanceDB(self._dataset.get_db_table(), self._embeddings)
-        self._table_name =   f"{self._entity_namespace}_{self._entity_name}"
-         
-    def add(self, records: List[AbstractEntity]):
+        #you need to ensure the entity has a vector column - in pyarrow it becomes a fixed length thing 
+        self._data = LanceDataTable(name=self._full_entity_name, schema=entity)
+        self._table_name =  f"{self._entity_namespace}_{self._entity_name}"
+        
+        with warnings.catch_warnings():        
+            warnings.simplefilter('ignore')
+            #just two types under consideration
+            if embeddings_provider == 'instruct':
+                self._embeddings = HuggingFaceInstructEmbeddings(
+                    query_instruction="Represent the query for retrieval: "
+                )
+            else:
+                self._embeddings = OpenAIEmbeddings()
+                
+            #do all this for langchain and llama_index 
+            self._langchain_vector_db = LanceDB(self._data.table, self._embeddings)
+            vector_store = LanceDBVectorStore(uri=self._data.database_uri, table_name=self._data.name)
+            #note we need to specify the embeddings - at a minimum this determines the vector length 
+            #if we dont do this we get cryptic errors when the query is pushed down to lance
+            index = VectorStoreIndex.from_vector_store(vector_store, ServiceContext.from_defaults(
+                embed_model=self._embeddings
+            ))
+            self._query_engine = index.as_query_engine()
+          
+    def query_index(self, question):
+        return self._query_engine.query(question)
+        
+    def add(self, records: List[AbstractEntity],plan=False):
         """
         loads data into the vector store if there is any big text in there
         """
         def add_embedding_vector(d):
-            d['vector'] = self._embeddings.embed_query(d['text'])
+            d['vector'] = self._embeddings.embed_query(d['text']) 
             return d
+        
         if len(records):
+            #TODO: coerce some types - anything that becomes a list of types is fine
             logger.info(f"Adding {len(records)} to {self._table_name}...")
             records_with_embeddings = [add_embedding_vector(r.large_text_dict()) for r in records]
-            self._dataset.upsert_records(records_with_embeddings)
+            if plan:
+                return records_with_embeddings
+            self._data.upsert_records(records_with_embeddings)
+            logger.info(f"Records added")
         return records
 
     def load(self):
         """
         Loads the lance data backed by s3 parquet files         
         """
-        return self._dataset.load()
+        return self._data.load()
     
     def __call__(self, question):
         return self.as_tool().run(question)
@@ -78,13 +104,12 @@ class VectorDataStore(AbstractStore):
     def as_tool(self,model='gpt-4'):
         """
         provides a tool over the data
-        hard coding text field for now
         """
         
         qa = RetrievalQA.from_chain_type(
             llm=ChatOpenAI(model_name=model, temperature=0.0),
             chain_type="stuff",
-            retriever=self._langchain_lance_db.as_retriever(),
+            retriever=self._langchain_vector_db.as_retriever(),
         )
 
         return Tool(
@@ -94,27 +119,7 @@ class VectorDataStore(AbstractStore):
                 Do not pass identifiers and codes to this tool. Only pass proper nouns and questions in full sentences.
                 Added context: {self._extra_context}
                 About the entity: {self._about_entity}
-                """,
+                """
         )
     
-
-
-# def tool_from_index(
-#     index,
-#     name="Vector Index",
-#     description="useful for when you want to answer queries about ONE platform",
-# ):
-#     """
-#     Simple wrapper example around an index like a slack index to build a tool with some hard coded settings for now
-#     """
-#     tool_config = IndexToolConfig(
-#         index=index,
-#         name=name,
-#         description=description,
-#         index_query_kwargs={"similarity_top_k": 3},
-#         tool_kwargs={"return_direct": True},
-#     )
-
-#     tool = LlamaIndexTool.from_tool_config(tool_config)
-#     return tool
  

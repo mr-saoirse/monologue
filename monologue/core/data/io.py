@@ -22,6 +22,12 @@ def read_dataset(uri) -> ds.Dataset:
     fs = None if uri[:5] != 's3://' else s3fs.S3FileSystem()
     return ds.dataset(uri, filesystem=fs)
 
+def exists(uri):
+    fs = None if uri[:5] != 's3://' else s3fs.S3FileSystem()
+    if fs:
+        return fs.exists(uri)
+    raise Exception("Not implemented for scheme but easy to fix")
+
 def read(uri, lazy=False) -> pl.DataFrame:
     """
     read data to polar data
@@ -31,6 +37,14 @@ def read(uri, lazy=False) -> pl.DataFrame:
         return pl.scan_pyarrow_dataset(dataset)
     
     return pl.from_arrow(dataset.to_table())
+
+def get_query_context(uri, name):
+    """
+    get tje polar query context from polars
+    """
+    ctx = pl.SQLContext()
+    ctx.register(name, read(uri,lazy=True))
+    return ctx
 
 def read_if_exists(uri, **kwargs):
     #TODO: add some s3 clients stuff

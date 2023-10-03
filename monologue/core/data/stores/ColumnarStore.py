@@ -6,7 +6,7 @@ from monologue.core.data.clients import DuckDBClient
 import pandas as pd
 from . import AbstractStore
 from monologue import logger
-from monologue.core.data.io import merge
+from monologue.core.data.io import merge,read,get_query_context
 
 COLUMN_STORE_ROOT_URI = f"s3://{S3BUCKET}/stores/columnar/v0"
 
@@ -34,7 +34,15 @@ class ColumnarDataStore(AbstractStore):
     
     def __call__(self, question):
         return self.as_tool().run(question)
+    
+    @property
+    def query_context(self):
+        return get_query_context(self._table_path, name=self._entity_name)
 
+    def query(self, query):
+        ctx = self.query_context
+        return ctx.execute(query).collect()
+    
     def as_tool(
         self,
         return_type="dict",
