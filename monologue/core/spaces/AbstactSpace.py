@@ -1,0 +1,3 @@
+class AbstractSpace:
+    pass
+
