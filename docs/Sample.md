@@ -15,7 +15,37 @@ jupyter:
 
 ```python
 import sys
+import pandas as pd
 sys.path.append("../")
+```
+
+```python
+from monologue.core.agents import BasicToolUsingAgent,QuestionGeneratingAgent, BasicTypedResponseToolUsingAgent
+from monologue.core.data.stores import VectorDataStore, ColumnarDataStore, EntityDataStore
+from monologue.entities.examples import AvengingPassengersInstruct, NycTripEvent, Places
+from monologue.core.data.stores import tools_for_entity
+
+from monologue.core.utils.ops import pydantic_to_pyarrow_schema
+pydantic_to_pyarrow_schema(Places)
+```
+
+```python
+tools = [VectorDataStore(AvengingPassengersInstruct, extra_context="This stores inforamtion about people travelling in New York taxis").as_tool(),
+         VectorDataStore(Places, extra_context="This stores inforamtion about places in New York").as_tool(),
+         ColumnarDataStore(NycTripEvent).as_tool()
+        ]
+
+agent = BasicToolUsingAgent(tools=tools, context="Answer questions about people taking trips in new york")
+agent("Please provide a summary of the person who went to Carroll Gardens most often with as much detail as possible. what might they have gont to Carroll gardens?")
+
+```
+
+```python
+
+```
+
+```python
+
 ```
 
 ```python
@@ -53,9 +83,7 @@ store
 ### how we add data to the store
 
 ```python
-# import pandas as pd
-# data = pd.read_csv("/Users/sirsh/Downloads/nyc_trip_data_sample.csv") 
-# store.add(data)
+
 ```
 
 ### load the tool and ask questions
@@ -111,6 +139,18 @@ store("What can you tell me about captain america? What was his real name?")
 ### places
 
 ```python
+
+import res
+s3 = res.connectors.load('s3')
+for f in list(s3.ls('s3://res-data-platform/stores/vector/v0/examples_Places')):
+    print(f)
+    s3._delete_object(f)
+    
+    
+```
+
+```python
+import pandas as pd
 data = pd.read_csv("/Users/sirsh/Downloads/nyc_zones.csv").drop(columns='id',index=1).rename(columns={'entity_key':'id'})
 data['doc_id'] = data['id']
 data['name'] = data['id']
@@ -118,13 +158,18 @@ data.head()
 ```
 
 ```python
-records = [Places(**d) for d in data.to_dict('records')]
-#store.add(data)
+from monologue.core.utils.ops import pydantic_to_pyarrow_schema
+pydantic_to_pyarrow_schema(Places)
 ```
 
 ```python
 store = VectorDataStore(Places)
 #e = store.add(records[:10],plan=False)
+```
+
+```python
+records = [Places(**d) for d in data.to_dict('records')]
+store.add(records)
 ```
 
 ```python

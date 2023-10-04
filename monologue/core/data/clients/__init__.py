@@ -1,1 +1,2 @@
-from . DuckDBClient import DuckDBClient
+from .DuckDBClient import DuckDBClient
+from .KeyRegistry import KeyRegistry, TypedKeyRegistry

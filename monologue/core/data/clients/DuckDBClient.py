@@ -1,6 +1,7 @@
 import duckdb
 import os
 
+
 def escape(s):
     return s if not isinstance(s, str) else f"'{s}'"
 
@@ -10,7 +11,7 @@ class _query:
     ***
     very simple fluent query helper
     ***
-    
+
     """
 
     def __init__(self, engine, root):
@@ -54,7 +55,8 @@ class _query:
 
     def __repr__(self) -> str:
         return self.select(plan=True)
-    
+
+
 class DuckDBClient:
     def __init__(self, **options):
         self._cursor = duckdb.connect()
@@ -74,25 +76,22 @@ class DuckDBClient:
             {creds}
         """
         )
-        
-    def inspect_enums(self, uri, enum_threshold=200):
 
-        
-        df = self.execute(f"SELECT * FROM '{uri}'")  
+    def inspect_enums(self, uri, enum_threshold=200):
+        df = self.execute(f"SELECT * FROM '{uri}'")
+
         def try_unique(c):
             try:
                 return len(df[c].unique())
             except:
                 return enum_threshold
-            
+
         columns = df.columns
         enum_types = [c for c in columns if try_unique(c) < enum_threshold]
-        return  {c: list(df[c].unique()) for c in df.columns if c in enum_types}
+        return {c: list(df[c].unique()) for c in df.columns if c in enum_types}
 
     def execute(self, query):
-        """
- 
-        """
+        """ """
         return self._cursor.execute(query).pl()
 
     def query_from_root(self, root):
