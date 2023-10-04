@@ -6,35 +6,42 @@ from monologue.core.data.clients import DuckDBClient
 import pandas as pd
 from . import AbstractStore
 from monologue import logger
-from monologue.core.data.io import merge,read,get_query_context
+from monologue.core.data.io import merge, read, get_query_context
 
 COLUMN_STORE_ROOT_URI = f"s3://{S3BUCKET}/stores/columnar/v0"
+
 
 class ColumnarDataStore(AbstractStore):
     """
     Load a datastore or use it as a too
-    
-    from res.learn.agents.data.ColumnarDataStore import ColumnarDataStore
-    st = ColumnarDataStore(namespace='example',entity_name='order')
-    data = st.load()
-    st.as_tool()
+
+    store = ColumnarDataStore(NycTripEvent)
+    #populate with some sample data e.g.
+    #data = pd.read_csv("/Users/sirsh/Downloads/nyc_trip_data_sample.csv")
+    #we need to send lists of dicts or Polar
+    #d = store.add(data.to_dict('records'))
+    #illustrate fetching some in the schema
+    data = store.fetch_entities()
+    #ask questions of the store
+    store("Who traveled most often to JFK Airport")
+
 
     """
 
-    def __init__(self, entity, extra_context=None):
+    def __init__(self, entity: AbstractEntity, extra_context=None):
         super().__init__(entity=entity)
         self._entity = entity
         self._db = DuckDBClient()
-        self._table_path = f"{COLUMN_STORE_ROOT_URI}/{self._entity_name}/{self._entity_namespace}/parts/0/data.parquet"
-        #base class
+        self._table_path = f"{COLUMN_STORE_ROOT_URI}/{self._entity_namespace}/{self._entity_name}/parts/0/data.parquet"
+        # base class
         self._extra_context = extra_context
 
     def load(self):
         return self._s3.read(self._table_path)
-    
+
     def __call__(self, question):
         return self.as_tool().run(question)
-    
+
     @property
     def query_context(self):
         return get_query_context(self._table_path, name=self._entity_name)
@@ -42,13 +49,17 @@ class ColumnarDataStore(AbstractStore):
     def query(self, query):
         ctx = self.query_context
         return ctx.execute(query).collect()
-    
+
+    def fetch_entities(self, limit=10) -> List[AbstractEntity]:
+        data = self.query(f"SELECT * FROM {self._entity_name} LIMIT {limit}").to_dicts()
+        return [self._entity(**d) for d in data]
+
     def as_tool(
         self,
         return_type="dict",
         build_enums=True,
         limit_table_rows=200,
-        llm_model='gpt-4'
+        llm_model="gpt-4",
     ):
         """
         Create a tool for answering questions about the entity
@@ -60,9 +71,9 @@ class ColumnarDataStore(AbstractStore):
             return s.replace("CURRENT_DATE ", "CURRENT_DATE()")
 
         llm = ChatOpenAI(model_name=llm_model, temperature=0.0)
- 
+
         enums = {} if not build_enums else self._db.inspect_enums(self._table_path)
-        
+
         def ask(question):
             prompt = f"""For a table called TABLE with the {self._fields}, and the following column enum types {enums} ignore any columns asked that are not in this schema and give
                 me a DuckDB dialect sql query without any explanation that answers the question below. 
@@ -79,7 +90,7 @@ class ColumnarDataStore(AbstractStore):
                 if return_type == "dict":
                     return data.to_dicts()
                 return data
-            #TODO better LLM and Duck exception handling
+            # TODO better LLM and Duck exception handling
             except Exception as ex:
                 return []
 
@@ -94,14 +105,15 @@ class ColumnarDataStore(AbstractStore):
             """,
         )
 
-
     def add(self, records: List[AbstractEntity]):
         """
         Add the fields configured on the Pydantic type that are columnar - defaults all
         These are merged into parquet files on some path in the case of this tool
         """
- 
+
         if len(records):
-            logger.info(f"Writing {self._table_path}. {len(records)} records. Merge will be on key[{self._key_field}]")
+            logger.info(
+                f"Writing {self._table_path}. {len(records)} records. Merge will be on key[{self._key_field}]"
+            )
             return merge(self._table_path, records, key=self._key_field)
         return records
