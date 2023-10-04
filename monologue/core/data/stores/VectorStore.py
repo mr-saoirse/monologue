@@ -50,7 +50,7 @@ class VectorDataStore(AbstractStore):
         self._full_entity_name = (
             alias or f"{self._entity_namespace}{sep}{self._entity_name}"
         )
-        self._embeddings_provider = self._entity.get_embeddings_provider(entity)
+        self._embeddings_provider = self._entity.embeddings_provider
         # you need to ensure the entity has a vector column - in pyarrow it becomes a fixed length thing
         self._data = LanceDataTable(name=self._full_entity_name, schema=entity)
         self._table_name = f"{self._entity_namespace}_{self._entity_name}"

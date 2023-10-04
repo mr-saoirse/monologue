@@ -46,7 +46,7 @@ def read(uri, lazy=False) -> pl.DataFrame:
 
 def get_query_context(uri, name):
     """
-    get tje polar query context from polars
+    get the polar query context from polars
     """
     ctx = pl.SQLContext()
     ctx.register(name, read(uri, lazy=True))

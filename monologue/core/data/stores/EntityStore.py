@@ -12,7 +12,7 @@ from monologue.core.data.stores import AbstractStore
 
 class EntityDataStore(AbstractStore):
     def __init__(self, entity: AbstractEntity, extra_context=None):
-        super().__init__(entity=entity)
+        super().__init__(entity=entity, extra_context=extra_context)
         self._db = TypedKeyRegistry(
             schema=self._entity_namespace, type_key=self._entity_name
         )

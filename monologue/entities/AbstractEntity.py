@@ -1,10 +1,14 @@
 from typing import Union, List, Optional
-from pydantic import Field, BaseModel
+from pydantic import Field, BaseModel, create_model, BaseConfig
 import json
 import numpy as np
 
 INSTRUCT_EMBEDDING_VECTOR_LENGTH = 768
 OPEN_AI_EMBEDDING_VECTOR_LENGTH = 1536
+
+
+class DynamicConfig(BaseConfig):
+    namespace = "default"
 
 
 class NpEncoder(json.JSONEncoder):
@@ -24,43 +28,64 @@ class NpEncoder(json.JSONEncoder):
 
 
 class AbstractEntity(BaseModel):
-    def get_namespace(cls):
+    @classmethod
+    @property
+    def namespace(cls):
+        """
+        Takes the namespace from config or module - returns default if nothing else e.g. dynamic modules
+        """
+        if hasattr(cls, "Config"):
+            if hasattr(cls.Config, "namespace"):
+                return cls.Config.namespace
+
         # TODO: simple convention for now - we can introduce other stuff including config
         parts = cls.__module__.split(".")
-        return parts[-2] if len(parts) > 2 else None
+        return parts[-2] if len(parts) > 2 else "default"
 
-    def get_entity_name(cls):
+    @classmethod
+    @property
+    def entity_name(cls):
         # TODO: we will want to fully qualify these names
         s = cls.schema()
         return s["title"]
 
-    def get_full_entity_name(cls, sep="_"):
+    @classmethod
+    @property
+    def full_entity_name(cls, sep="_"):
         return f"{cls.get_namespace()}{sep}{cls.get_entity_name()}"
 
-    def get_key_field(cls):
+    @classmethod
+    @property
+    def key_field(cls):
         s = cls.schema()
         key_props = [k for k, v in s["properties"].items() if v.get("is_key")]
         # TODO: assume one key for now
         if len(key_props):
             return key_props[0]
 
-    def get_fields(cls):
+    @classmethod
+    @property
+    def fields(cls):
         s = cls.schema()
         key_props = [k for k, v in s["properties"].items()]
         return key_props
 
-    def get_about_text(cls):
+    @classmethod
+    @property
+    def about_text(cls):
         if hasattr(cls, "config"):
             c = cls.config
             return getattr(c, "about", "")
 
-    def large_text_dict(cls):
-        return cls.dict()
-
-    def get_embeddings_provider(cls):
+    @classmethod
+    @property
+    def embeddings_provider(cls):
         if hasattr(cls, "Config"):
             if hasattr(cls.Config, "embeddings_provider"):
                 return cls.Config.embeddings_provider
+
+    def large_text_dict(cls):
+        return cls.dict()
 
     def __repr__(cls):
         """
@@ -74,6 +99,17 @@ class AbstractEntity(BaseModel):
         d["__namespace__"] = cls.get_namespace()
         d = json.dumps(d, cls=NpEncoder, default=str)
         return f"""```json{d}```"""
+
+    @classmethod
+    def create_model(cls, name, namespace=None, **fields):
+        """
+        For dynamic creation of models for the type systems
+        create something that inherits from the class and add any extra fields
+
+        TODO: pop namespaces somewhere
+        """
+
+        return create_model(name, **fields, __module__=namespace, __base__=cls)
 
 
 class AbstractVectorStoreEntry(AbstractEntity):
