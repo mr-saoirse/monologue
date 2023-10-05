@@ -6,7 +6,7 @@ from monologue.core.data.clients import DuckDBClient
 import pandas as pd
 from . import AbstractStore
 from monologue import logger
-from monologue.core.data.io import merge, read, get_query_context
+from monologue.core.data.io import merge, read, get_query_context, write
 
 COLUMN_STORE_ROOT_URI = f"s3://{S3BUCKET}/stores/columnar/v0"
 
@@ -37,7 +37,7 @@ class ColumnarDataStore(AbstractStore):
         self._extra_context = extra_context
 
     def load(self):
-        return self._s3.read(self._table_path)
+        return read(self._table_path)
 
     def __call__(self, question):
         return self.as_tool().run(question)
@@ -105,15 +105,19 @@ class ColumnarDataStore(AbstractStore):
             """,
         )
 
-    def add(self, records: List[AbstractEntity]):
+    def add(self, records: List[AbstractEntity], mode="merge"):
         """
         Add the fields configured on the Pydantic type that are columnar - defaults all
         These are merged into parquet files on some path in the case of this tool
         """
 
         if len(records):
-            logger.info(
-                f"Writing {self._table_path}. {len(records)} records. Merge will be on key[{self._key_field}]"
+            logger.info(f"Writing {self._table_path}. {len(records)} records.")
+            if mode == "merge":
+                logger.info(f" Merge will be on key[{self._key_field}]")
+            return (
+                merge(self._table_path, records, key=self._key_field)
+                if mode != "overwrite"
+                else write(self._table_path, records)
             )
-            return merge(self._table_path, records, key=self._key_field)
         return records

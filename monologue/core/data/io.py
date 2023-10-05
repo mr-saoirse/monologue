@@ -23,7 +23,9 @@ def _get_writer(df, uri=None):
 
 def read_dataset(uri) -> ds.Dataset:
     fs = None if uri[:5] != "s3://" else s3fs.S3FileSystem()
-    return ds.dataset(uri, filesystem=fs)
+    # we choose to infer the format
+    format = uri.split(".")[-1]
+    return ds.dataset(uri, filesystem=fs, format=format)
 
 
 def exists(uri):
@@ -105,3 +107,12 @@ def merge(uri: str, data: Union[pl.DataFrame, List[dict]], key: str) -> ds.Datas
     write(uri, data.unique(subset=[key], keep="last"))
 
     return read_dataset(uri)
+
+
+def typed_record_iterator(uri, entity_type, lazy=False):
+    """
+    im not sure how to lazily do this but we will look into it or chunk perhaps
+    """
+    df = read(uri, lazy=lazy)
+    for record in df.rows(named=True):
+        yield (entity_type(**record))

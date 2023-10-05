@@ -17,7 +17,6 @@ from monologue.core.data.io import exists
 from monologue import logger
 import pyarrow as pa
 import typing
-from monologue.core.utils.ops import pydantic_to_pyarrow_schema
 
 
 VECTOR_STORE_ROOT_URI = f"s3://{S3BUCKET}/stores/vector/v0"
@@ -63,7 +62,8 @@ class LanceDataTable:
         """
 
         if not isinstance(schema, pa.Schema):
-            schema = pydantic_to_pyarrow_schema(schema)
+            # this is because we are assuming it has this e.g. an abstract entity
+            schema = schema.pyarrow_schema()
             logger.debug(f"{schema=}")
         return self._db.create_table(name=name, schema=schema)
 

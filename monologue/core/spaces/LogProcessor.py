@@ -1,12 +1,14 @@
-from . import LogParser
 from monologue.core.data.stores import VectorDataStore, ColumnarDataStore
-
-
 from pydantic import BaseModel, Field
 import typing
 from monologue.core.utils.ops import parse_fenced_code_blocks, str_hash
+from monologue.entities import AbstractVectorStoreEntry, AbstractEntity
+from monologue.core.utils.ops import str_hash
+import re
+from monologue import logger
 
 DEFAULT_LOG_LEVEL = "EVENT"
+PREAMBLE_BEGINS_REGEX = r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3} \| .+ \|"
 
 
 class LogEntry(BaseModel):
@@ -36,7 +38,12 @@ class LogProcessor:
         )
 
     def process_line(self, log: str):
-        """ """
+        """
+        Processing line by line is EXTREMELY inefficient but its good for testing
+        In principle we would need smarter batching and typing loading etc
+        actually we will probably write this part in rust too
+        the embeddings are a bottleneck n any case, especially for the Instruct one
+        """
         try:
             entry = self.parse_log(log)
 
@@ -45,26 +52,32 @@ class LogProcessor:
             other processes will build other stores e.g. entity and graph in other processes, not at ingest time
             """
             if entry.objects:
-                # lookup the registry to see if we know the type
-                object_info = {}
-
                 for o in entry.objects:
-                    ColumnarDataStore.ingest(
-                        data=o,
-                        process=entry.process_name,
-                        module_name=entry.module_name,
-                        object_info=object_info,
-                    )
+                    # the objects are parsed in the log parser to actual json objects
+                    # here we load the type using embedded type info and then construct and add it
+                    ptype: AbstractEntity = AbstractEntity.get_type_from_the_ossified(o)
+                    ColumnarDataStore(ptype).add([ptype(**o)])
             else:
-                VectorDataStore.ingest(
-                    data=entry.content,
-                    process=entry.process_name,
-                    module_name=entry.module_name,
+                # the t
+                ptype: AbstractVectorStoreEntry = AbstractVectorStoreEntry.create_model(
+                    entry.module_name, namespace="default"
                 )
+                # TODO - we can be more descriptive here with a more advanced interface
+                #      - this is an experimental interface for testing
+                name = LogProcessor.extract_content_header(entry.content, str_hash())
+                obj = ptype(name=name, text=entry.content)
+                VectorDataStore(ptype).add([obj])
 
-        except:
-            # todo logs
-            pass
+        except Exception as ex:
+            logger.debug(f"Problem parsing {log} {ex}")
+            raise
+
+    @staticmethod
+    def extract_content_header(s, default=None):
+        match = re.search(r"\*\*\*(.*?)\*\*\*", s)
+        if match:
+            return match.group(1)
+        return default
 
     def parse_log(self, log_entry: str) -> LogEntry:
         """
@@ -95,3 +108,21 @@ class LogProcessor:
             module_name=proc_info_parts[1].strip(),
             line_number=int(proc_info_parts[2].strip()),
         )
+
+    @staticmethod
+    def log_lines_generator(log_text):
+        log_entry = ""
+        log_entry_started = False
+
+        for line in log_text.split("\n"):
+            if re.match(PREAMBLE_BEGINS_REGEX, line):
+                if log_entry_started:
+                    yield log_entry.strip()
+                log_entry = line
+                log_entry_started = True
+            elif log_entry_started:
+                log_entry += "\n" + line
+            else:
+                pass
+        if log_entry_started:
+            yield log_entry.strip()
