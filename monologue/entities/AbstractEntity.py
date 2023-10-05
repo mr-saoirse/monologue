@@ -3,12 +3,9 @@ from pydantic import Field, BaseModel, create_model, BaseConfig
 import json
 import numpy as np
 
+# When we are mature we would store configuration look this somewhere more central
 INSTRUCT_EMBEDDING_VECTOR_LENGTH = 768
 OPEN_AI_EMBEDDING_VECTOR_LENGTH = 1536
-
-
-class DynamicConfig(BaseConfig):
-    namespace = "default"
 
 
 class NpEncoder(json.JSONEncoder):
@@ -105,8 +102,6 @@ class AbstractEntity(BaseModel):
         """
         For dynamic creation of models for the type systems
         create something that inherits from the class and add any extra fields
-
-        TODO: pop namespaces somewhere
         """
 
         return create_model(name, **fields, __module__=namespace, __base__=cls)

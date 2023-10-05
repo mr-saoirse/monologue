@@ -26,7 +26,7 @@ The main idea we explore is logging as a learning system interface. It becomes e
 
 ## Install
 
-Set environment vars; OPEN_AI, AWS, MONO_BUCKET
+Set environment vars; OPEN_AI, AWS, MONO_BUCKET, LOKI_ADDR
 
 ## Deploy
 

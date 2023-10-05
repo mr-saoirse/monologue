@@ -1,0 +1,65 @@
+#kubectl create namespace loki
+#helm upgrade --install --namespace loki --values values.yaml loki grafana/loki
+#helm upgrade --install --namespace loki --set loki.serviceName=loki-gateway promtail grafana/promtail
+#/loki/api/v1/query
+
+loki:
+  auth_enabled: false
+  commonConfig:
+    path_prefix: /var/loki
+    replication_factor: 1
+
+  storage:
+    bucketNames:
+      #CHANGE ME
+      chunks: YOUR-BUCKET
+    type: s3
+
+  schema_config:
+    configs:
+      - from: "2022-01-11"
+        index:
+          period: 24h
+          prefix: loki_index_
+        store: boltdb-shipper
+        object_store: s3
+        schema: v12
+
+  storage_config:
+    aws:
+      #CHANGE ME
+      s3: s3://YOUR-REGION/YOUR-BUCKET
+      insecure: false
+      s3forcepathstyle: true
+    boltdb_shipper:
+      active_index_directory: /var/loki/index
+      shared_store: s3
+  rulerConfig:
+    storage:
+      type: local
+      local:
+        directory: /var/loki/rules
+
+write:
+  replicas: 2
+
+read:
+  replicas: 1
+
+test:
+  enabled: false
+monitoring:
+  dashboards:
+    enabled: false
+  rules:
+    enabled: false
+  alerts:
+    enabled: false
+  serviceMonitor:
+    enabled: false
+  selfMonitoring:
+    enabled: false
+    lokiCanary:
+      enabled: false
+    grafanaAgent:
+      installOperator: false

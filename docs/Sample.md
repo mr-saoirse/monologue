@@ -29,6 +29,28 @@ from monologue.core.utils.ops import pydantic_to_pyarrow_schema
 pydantic_to_pyarrow_schema(Places)
 ```
 
+```python
+common:
+  path_prefix: /tmp/loki
+  storage:
+    s3:
+      bucketnames: bucket-name
+      region: aws-region
+      access_key_id: Key
+      secret_access_key: Secret
+
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /tmp/loki/active
+    shared_store: s3
+    cache_location: /tmp/loki/cache
+    cache_ttl: 24h
+
+compactor:
+  working_directory: /tmp/loki/compactor
+  shared_store: s3
+```
+
 #### You can create dynamic types 
 - this is useful because we have assumed everything is driven by types but we might not always have one
 
