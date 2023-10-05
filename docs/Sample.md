@@ -22,12 +22,37 @@ sys.path.append("../")
 ```python
 from monologue.core.agents import BasicToolUsingAgent,QuestionGeneratingAgent, BasicTypedResponseToolUsingAgent
 from monologue.core.data.stores import VectorDataStore, ColumnarDataStore, EntityDataStore
-from monologue.entities.examples import AvengingPassengersInstruct, NycTripEvent, Places
+from monologue.entities.examples import AvengingPassengersInstruct, NycTripEvent, Places, AbstractVectorStoreEntry
 from monologue.core.data.stores import tools_for_entity
 
 from monologue.core.utils.ops import pydantic_to_pyarrow_schema
 pydantic_to_pyarrow_schema(Places)
 ```
+
+```python
+common:
+  path_prefix: /tmp/loki
+  storage:
+    s3:
+      bucketnames: bucket-name
+      region: aws-region
+      access_key_id: Key
+      secret_access_key: Secret
+
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /tmp/loki/active
+    shared_store: s3
+    cache_location: /tmp/loki/cache
+    cache_ttl: 24h
+
+compactor:
+  working_directory: /tmp/loki/compactor
+  shared_store: s3
+```
+
+#### You can create dynamic types 
+- this is useful because we have assumed everything is driven by types but we might not always have one
 
 ```python
 tools = [VectorDataStore(AvengingPassengersInstruct, extra_context="This stores inforamtion about people travelling in New York taxis").as_tool(),
@@ -37,14 +62,6 @@ tools = [VectorDataStore(AvengingPassengersInstruct, extra_context="This stores 
 
 agent = BasicToolUsingAgent(tools=tools, context="Answer questions about people taking trips in new york")
 agent("Please provide a summary of the person who went to Carroll Gardens most often with as much detail as possible. what might they have gont to Carroll gardens?")
-
-```
-
-```python
-
-```
-
-```python
 
 ```
 
@@ -80,12 +97,6 @@ store = ColumnarDataStore(NycTripEvent)
 store
 ```
 
-### how we add data to the store
-
-```python
-
-```
-
 ### load the tool and ask questions
 
 ```python
@@ -95,6 +106,7 @@ tool
 
 ```python
 tool.run("What is least popular destination in new york city? Who has travelled there?")
+#or just store("ask question")
 ```
 
 # Vector Store Loading
@@ -139,27 +151,11 @@ store("What can you tell me about captain america? What was his real name?")
 ### places
 
 ```python
-
-import res
-s3 = res.connectors.load('s3')
-for f in list(s3.ls('s3://res-data-platform/stores/vector/v0/examples_Places')):
-    print(f)
-    s3._delete_object(f)
-    
-    
-```
-
-```python
 import pandas as pd
 data = pd.read_csv("/Users/sirsh/Downloads/nyc_zones.csv").drop(columns='id',index=1).rename(columns={'entity_key':'id'})
 data['doc_id'] = data['id']
 data['name'] = data['id']
 data.head()
-```
-
-```python
-from monologue.core.utils.ops import pydantic_to_pyarrow_schema
-pydantic_to_pyarrow_schema(Places)
 ```
 
 ```python
@@ -177,11 +173,15 @@ store.load()
 ```
 
 ```python
-store("What can you tell me about civil airport in East Elmhurst Queens?")
+store("What can you tell me about the civil airport in East Elmhurst Queens?")
 ```
 
 ```python
 store.query_index("What can you tell me about civil airport in East Elmhurst Queens?")
+```
+
+```python
+from monologue.
 ```
 
 ```python
