@@ -34,10 +34,16 @@ result[0].values
 ```python
 from monologue.core.agents import BasicToolUsingAgent,QuestionGeneratingAgent, BasicTypedResponseToolUsingAgent
 from monologue.core.data.stores import VectorDataStore, ColumnarDataStore, EntityDataStore
-from monologue.entities.examples import AvengingPassengersInstruct, NycTripEvent, Places, AbstractVectorStoreEntry
+from monologue.entities.examples import AvengingPassengersInstruct, NycTripEvent, Places, AbstractVectorStoreEntry, BookReviewers
 from monologue.entities.examples import AbstractEntity
 from monologue.core.data.stores import tools_for_entity
 AbstractEntity.get_type('examples', 'Places')
+```
+
+```python
+#these data were ingested from the logs
+store = ColumnarDataStore(BookReviewers)
+store("Who gave the Hobbit the highest review? Please tell me everything you know about that person")
 ```
 
 #### You can create dynamic types 
