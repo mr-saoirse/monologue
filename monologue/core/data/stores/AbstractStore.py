@@ -19,3 +19,16 @@ class AbstractStore:
     @property
     def name(cls):
         return cls._alias or cls._entity_name
+
+    @classmethod
+    def ingest_records(cls, uri, entity_type: AbstractEntity, **kwargs):
+        """
+        Ingest a dataframe format of records that are in the correct schema
+        this works if a base class is constructed from the entity
+        """
+        from monologue.core.data.io import typed_record_iterator
+
+        records = list(typed_record_iterator(uri, entity_type=entity_type))
+        store: AbstractStore = cls(entity_type)
+        store.add(records, **kwargs)
+        return store

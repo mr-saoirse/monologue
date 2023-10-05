@@ -1,11 +1,12 @@
 from datetime import datetime
+import re
 from .. import (
     AbstractEntity,
     AbstractVectorStoreEntry,
     OPEN_AI_EMBEDDING_VECTOR_LENGTH,
     INSTRUCT_EMBEDDING_VECTOR_LENGTH,
 )
-from .. import Optional, Field, List
+from .. import Optional, Field, List, root_validator
 
 
 class NycTripEvent(AbstractEntity):
@@ -80,3 +81,76 @@ class PlacesInstruct(Places):
     vector: Optional[List[float]] = Field(
         fixed_size_length=INSTRUCT_EMBEDDING_VECTOR_LENGTH
     )
+
+
+"""
+The book views
+"""
+
+
+class TopUniversities(AbstractEntity):
+    """
+    For this dataset we took the top 200 that did not have null values
+    https://www.kaggle.com/datasets/mylesoneill/world-university-rankings
+    """
+
+    world_rank: str
+    university_name: str = Field(is_key=True)
+    country: str
+    teaching: float
+    international: float
+    research: float
+    citations: float
+    income: float
+    total_score: float
+    num_students: int
+    student_staff_ratio: float
+    international_students: str
+    female_male_ratio: str
+    year: int
+
+
+class BookReviews(AbstractEntity):
+    """
+    generated a dataset based on amazon book reviews
+    but cleaned here in the notebook see notebooks for datasets
+    """
+
+    id: str = Field(is_key=True)
+    title: str
+    topic: str
+    review_score: float
+    review_time: int
+    review_text: str
+    profile_name: str
+    user_id: str
+
+
+class BookReviewers(AbstractEntity):
+    user_id: str = Field(is_key=True)
+    review_count: int
+    review_min: float
+    review_max: float
+    review_average: float
+    profile_name: str
+    favourite_book: str
+    favourite_topic: str
+    university_attended: str
+
+
+class Books(AbstractEntity):
+    title: str = Field(is_key=True)
+    description: Optional[str] = Field("No Description")
+    first_author: str
+    category: str
+    published_date: str
+    preview_link: Optional[str]
+    image: Optional[str]
+
+    @root_validator
+    def default_ids(cls, values):
+        """
+        an example of cleaning data
+        """
+        values["title"] = re.sub(r"[^a-zA-Z0-9\s]", "", values["title"])
+        return values

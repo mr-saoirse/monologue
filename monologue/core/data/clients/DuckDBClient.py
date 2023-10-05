@@ -77,12 +77,17 @@ class DuckDBClient:
         """
         )
 
-    def inspect_enums(self, uri, enum_threshold=200):
+    def inspect_enums(self, uri, enum_threshold=200, max_str_length=100):
         df = self.execute(f"SELECT * FROM '{uri}'")
 
         def try_unique(c):
             try:
+                # dont allow big strings (polars notation)
+                l = df[c].str.lengths().mean()
+                if l > max_str_length:
+                    return enum_threshold
                 return len(df[c].unique())
+
             except:
                 return enum_threshold
 

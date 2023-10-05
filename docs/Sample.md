@@ -16,39 +16,28 @@ jupyter:
 ```python
 import sys
 import pandas as pd
+
 sys.path.append("../")
+```
+
+```python
+from monologue.core.data.clients import LokiClient
+c = LokiClient()
+c.labels
+ 
+result = c.query('{app="promtail"}',try_parse=True) 
+result[0].values
+
+      
 ```
 
 ```python
 from monologue.core.agents import BasicToolUsingAgent,QuestionGeneratingAgent, BasicTypedResponseToolUsingAgent
 from monologue.core.data.stores import VectorDataStore, ColumnarDataStore, EntityDataStore
 from monologue.entities.examples import AvengingPassengersInstruct, NycTripEvent, Places, AbstractVectorStoreEntry
+from monologue.entities.examples import AbstractEntity
 from monologue.core.data.stores import tools_for_entity
-
-from monologue.core.utils.ops import pydantic_to_pyarrow_schema
-pydantic_to_pyarrow_schema(Places)
-```
-
-```python
-common:
-  path_prefix: /tmp/loki
-  storage:
-    s3:
-      bucketnames: bucket-name
-      region: aws-region
-      access_key_id: Key
-      secret_access_key: Secret
-
-storage_config:
-  boltdb_shipper:
-    active_index_directory: /tmp/loki/active
-    shared_store: s3
-    cache_location: /tmp/loki/cache
-    cache_ttl: 24h
-
-compactor:
-  working_directory: /tmp/loki/compactor
-  shared_store: s3
+AbstractEntity.get_type('examples', 'Places')
 ```
 
 #### You can create dynamic types 
