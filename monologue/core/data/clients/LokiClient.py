@@ -57,8 +57,14 @@ class LokiClient:
     """
     The Loki will read logs - on k8s when running make sure to set the env var
 
+    from monologue.core.data.clients import LokiClient
     c = LokiClient()
-    print(c.labels)
+    #check all the things we can query by
+    c.labels
+    #check we have the stream
+    c.get_streams('pod')
+    result = c.query('{pod="monologue"}',try_parse=True)
+    result
 
     #we can parse the logs if try_parse is set
     #its always best to do that if we are sure of the interface but we can disable to see what is coming back

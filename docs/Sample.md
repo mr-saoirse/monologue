@@ -21,30 +21,6 @@ sys.path.append("../")
 ```
 
 ```python
-from monologue.core.data.clients import LokiClient
-c = LokiClient()
-#check all the things we can query by
-c.labels
-#check we have the stream
-c.get_streams('pod')
-result = c.query('{pod="monologue"}',try_parse=True) 
-result
-      
-```
-
-```python
-for entry in result[0].values:
-    break
-entry.msg
-```
-
-```python
-import json
-with open("./test_loki.json", 'w') as f:
-    json.dump(result, f)
-```
-
-```python
 from monologue.core.agents import BasicToolUsingAgent,QuestionGeneratingAgent, BasicTypedResponseToolUsingAgent
 from monologue.core.data.stores import VectorDataStore, ColumnarDataStore, EntityDataStore
 from monologue.entities.examples import AvengingPassengersInstruct, NycTripEvent, Places, AbstractVectorStoreEntry, BookReviewers
