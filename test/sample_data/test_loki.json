@@ -1,0 +1,513 @@
+{
+    "resultType": "streams",
+    "result": [
+        {
+            "stream": {
+                "app": "monologue",
+                "container": "monologue",
+                "filename": "/var/log/pods/default_monologue_79e46346-aa87-4b1e-9c43-247bda2ff133/monologue/0.log",
+                "job": "default/monologue",
+                "namespace": "default",
+                "node_name": "ip-10-0-83-115.ec2.internal",
+                "pod": "monologue",
+                "stream": "stderr"
+            },
+            "values": [
+                [
+                    "1696590012623997640",
+                    "2023-10-06 11:00:12.623 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A125DR3VIG5N4J\", \"review_count\": 3, \"review_min\": 5.0, \"review_max\": 5.0, \"review_average\": 5.0, \"profile_name\": \"\\\"kosmicshak\\\"\", \"favourite_book\": \"Zen and the Art of Motorcycle Maintenance\", \"favourite_topic\": \"Philosophy\", \"university_attended\": \"Erasmus University Rotterdam\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590012623448002",
+                    "2023-10-06 11:00:12.623 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A124XDZGADK303\", \"review_count\": 2, \"review_min\": 5.0, \"review_max\": 5.0, \"review_average\": 5.0, \"profile_name\": \"\\\"sweetcitrus17\\\"\", \"favourite_book\": \"THE CATCHER IN THE RYE\", \"favourite_topic\": \"Fiction\", \"university_attended\": \"University of Sydney\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590012573004271",
+                    "2023-10-06 11:00:12.572 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A124TA6YU5JYYT\", \"review_count\": 3, \"review_min\": 5.0, \"review_max\": 5.0, \"review_average\": 5.0, \"profile_name\": \"K.Jackson\", \"favourite_book\": \"Christmas Carol (Ladybird Classics)\", \"favourite_topic\": \"Fiction\", \"university_attended\": \"Carnegie Mellon University\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590012572076485",
+                    "                "
+                ],
+                [
+                    "1696590012572065251",
+                    "                Kushiel's Dart won the 2002 Locus Award for Best First Novel. It was also nominated for the 2002 Gaylactic Spectrum Awards."
+                ],
+                [
+                    "1696590012571943187",
+                    "2023-10-06 11:00:12.571 | EVENT    | monologue.entities.examples.MyriadLoggers:books:23 -  ***Kushiel's Dart Awards and nominations***"
+                ],
+                [
+                    "1696590012571138814",
+                    "                "
+                ],
+                [
+                    "1696590012571126170",
+                    "                The book follows Ph\u00e8dre n\u00f3 Delaunay's life from birth. She's born with a mote in her eye, which makes her appear inappropriate for service as a religious courtesan, but it is revealed that this is actually a sign that she is an 'anguissette' or sexual masochist, deriving sexual pleasure from pain. Her bond is purchased by a nobleman who does train her as a courtesan, and discovers a plot against her homeland which she has a chance to interrupt."
+                ],
+                [
+                    "1696590012570989673",
+                    "2023-10-06 11:00:12.570 | EVENT    | monologue.entities.examples.MyriadLoggers:books:23 -  ***Kushiel's Dart Plot summary***"
+                ],
+                [
+                    "1696590012376705694",
+                    "2023-10-06 11:00:12.375 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A124R20KSIMXZJ\", \"review_count\": 4, \"review_min\": 4.0, \"review_max\": 5.0, \"review_average\": 4.75, \"profile_name\": \"Owl \\\"intellectual WITCH\\\"\", \"favourite_book\": \"Kushiel's Dart\", \"favourite_topic\": \"Fiction\", \"university_attended\": \"Alexandria University\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590012376703018",
+                    "                "
+                ],
+                [
+                    "1696590012376700747",
+                    "Example of a Serial Blog/Short Story Magazine Archived 20 January 2015 at the Wayback Machine"
+                ],
+                [
+                    "1696590012376698289",
+                    "\"Kate Colquhoun on the blurred boundaries between fiction and non-fiction\", La Cl\u00e9 des Langues, 11 September 2012."
+                ],
+                [
+                    "1696590012376695871",
+                    "                "
+                ],
+                [
+                    "1696590012376693595",
+                    "2023-10-06 11:00:12.375 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction External links***"
+                ],
+                [
+                    "1696590012376691210",
+                    "                "
+                ],
+                [
+                    "1696590012376688941",
+                    "                Eco, Umberto (15 July 2017). \"On the ontology of fictional characters: A semiotic approach\". Sign Systems Studies. 37 (1/2): 82\u201398. doi:10.12697/SSS.2009.37.1-2.04."
+                ],
+                [
+                    "1696590012376686217",
+                    "2023-10-06 11:00:12.375 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction Further reading***"
+                ],
+                [
+                    "1696590012376683868",
+                    "                "
+                ],
+                [
+                    "1696590012376681529",
+                    "Saricks, Joyce (2009). The Readers' Advisory Guide to Genre Fiction (2nd ed.). ALA Editions. p. 402."
+                ],
+                [
+                    "1696590012376679082",
+                    "                Rafferty, Terrence (4 February 2011). \"Reluctant Seer\". The New York Times Sunday Book Review. Retrieved 23 April 2012."
+                ],
+                [
+                    "1696590012376676709",
+                    "2023-10-06 11:00:12.375 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction References***"
+                ],
+                [
+                    "1696590012376674207",
+                    "                "
+                ],
+                [
+                    "1696590012376669528",
+                    "                The use of real events or real individuals as direct inspiration for imaginary works is known as fictionalization. The opposite circumstance, in which the physical world or a real turn of events seem influenced by past fiction, is commonly known as \"life imitating art\". The latter phrase is popularity associated with the Anglo-Irish fiction writer Oscar Wilde.The alteration of actual happenings into a fictional format, with this involving a dramatic representation of real events or people, is known as both fictionalization, or, more narrowly for visual performance works like in theatre and film, dramatization. According to the academic publication Oxford Reference, a work set up this way will have a \"narrative based partly or wholly on fact but written as if it were fiction\" such that \"[f]ilms and broadcast dramas of this kind often bear the label 'based on a true story'.\" In intellectual research, evaluating this process is a part of media studies.Examples of prominent fictionalization in the creative arts include those in the general context of World War II in popular culture and specifically Nazi German leaders such as Adolf Hitler in popular culture and Reinhard Heydrich in popular culture. For instance, American actor and comedian Charlie Chaplin portrayed the eccentric despot Adenoid Hynkel in the 1940 satirical film The Great Dictator. The unhinged, unintelligent figure fictionalized real events from the then ongoing Second World War in a way that presented fascist individuals as humorously irrational and pathetic. Many other villains take direct inspiration from real people while having fictional accents, appearances, backgrounds, names, and so on."
+                ],
+                [
+                    "1696590012376663334",
+                    "2023-10-06 11:00:12.375 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction Fictionalization as a concept***"
+                ],
+                [
+                    "1696590012376660823",
+                    "                "
+                ],
+                [
+                    "1696590012376658482",
+                    "The Internet has had a major impact on the creation and distribution of fiction, calling into question the feasibility of copyright as a means to ensure royalties are paid to copyright holders. Also, digital libraries such as Project Gutenberg make public domain texts more readily available. The combination of inexpensive home computers, the Internet, and the creativity of its users has also led to new forms of fiction, such as interactive computer games or computer-generated comics. Countless forums for fan fiction can be found online, where loyal followers of specific fictional realms create and distribute derivative stories. The Internet is also used for the development of blog fiction, where a story is delivered through a blog either as flash fiction or serial blog, and collaborative fiction, where a story is written sequentially by different authors, or the entire text can be revised by anyone using a wiki."
+                ],
+                [
+                    "1696590012376655730",
+                    "                Traditionally, fiction includes novels, short stories, fables, legends, myths, fairy tales, epic and narrative poetry, plays (including operas, musicals, dramas, puppet plays, and various kinds of theatrical dances). However, fiction may also encompass comic books, and many animated cartoons, stop motions, anime, manga, films, video games, radio programs, television programs (comedies and dramas), etc."
+                ],
+                [
+                    "1696590012376652669",
+                    "2023-10-06 11:00:12.375 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction Formats***"
+                ],
+                [
+                    "1696590012376646543",
+                    "                "
+                ],
+                [
+                    "1696590012376631081",
+                    "                Certain basic elements further help to define and break down all works of narrative, including all works of fictional narrative. Namely, all narratives include the elements of character, conflict, narrative mode, plot, setting, and theme. Characters are individuals inside a work of story, conflicts are the tension or problem that drives characters' thoughts and actions, narrative modes are the ways in which a story is communicated, plots are the sequence of events in a story, settings are the story's locations in time and space, and themes are deeper messages or interpretations about the story that its audience is left to discuss and reflect upon."
+                ],
+                [
+                    "1696590012376507640",
+                    "2023-10-06 11:00:12.374 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction Elements***"
+                ],
+                [
+                    "1696590012374251430",
+                    "                "
+                ],
+                [
+                    "1696590012374240013",
+                    "                Storytelling has existed in all human cultures, and each culture incorporates different elements of truth and fiction into storytelling. Early fiction was closely associated with history and myth. Greek poets such as Homer, Hesiod, and Aesop developed fictional stories that were told first through oral storytelling and then in writing. Prose fiction was developed in Ancient Greece, influenced by the storytelling traditions of Asia and Egypt. Distinctly fictional work was not recognized as separate from historical or mythological stories until the imperial period. Plasmatic narrative, following entirely invented characters and events, was developed through ancient drama and New Comedy. One common structure among early fiction is a series of strange and fantastic adventures as early writers test the limits of fiction writing. Milesian tales were an early example of fiction writing in Ancient Greece and Italy. As fiction writing developed in Ancient Greece, relatable characters and plausible scenarios were emphasized to better connect with the audience, including elements such as romance, piracy, and religious ceremonies. Heroic romance was developed in medieval Europe, incorporating elements associated with fantasy, including supernatural elements and chivalry.The structure of the modern novel was developed by Miguel de Cervantes with Don Quixote in the early-17th century. The novel became a primary medium of fiction in the 18th and 19th centuries. They were often associated with Enlightenment ideas such as empiricism and agnosticism. Realism developed as a literary style at this time. New forms of mass media developed in the late-19th and early-20th centuries, including popular-fiction magazines and early film. Interactive fiction was developed in the late-20th century through video games."
+                ],
+                [
+                    "1696590012374120716",
+                    "2023-10-06 11:00:12.374 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction History***"
+                ],
+                [
+                    "1696590012373312932",
+                    "                "
+                ],
+                [
+                    "1696590012373307048",
+                    "Literary critic James Wood argues that \"fiction is both artifice and verisimilitude\", meaning that it requires both creative inventions as well as some acceptable degree of believability to its audience, a notion often encapsulated in the poet Samuel Taylor Coleridge's idea of the audience's willing suspension of disbelief. The effects of experiencing fiction, and the way the audience is changed by the new information they discover, has been studied for centuries. Also, infinite fictional possibilities themselves signal the impossibility of fully knowing reality, provocatively demonstrating important notions of philosophy, such as there potentially being no criterion to measure constructs of reality."
+                ],
+                [
+                    "1696590012373290258",
+                    "                Typically, the fictionality of a work is publicly expressed and so the audience expects the work to deviate in some ways from the real world rather than presenting, for instance, only factually accurate portrayals or characters who are actual people. Because fiction is generally understood to not fully adhere to the real world, the themes and context of a work, such as if and how it relates to real-world issues or events, are open to interpretation. Since fiction is most long-established in the realm of literature (written narrative fiction), the broad study of the nature, function, and meaning of fiction is called literary theory, and the narrower interpretation of specific fictional texts is called literary criticism (with subsets like film criticism and theatre criticism also now long-established). Aside from real-world connections, some fictional works may depict characters and events within their own context, entirely separate from the known physical universe: an independent fictional universe. The creative art of constructing such an imaginary world is known as worldbuilding."
+                ],
+                [
+                    "1696590012373131277",
+                    "2023-10-06 11:00:12.372 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction Definition and theory***"
+                ],
+                [
+                    "1696590012178581897",
+                    "2023-10-06 11:00:12.177 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A1248XE6WS9B4A\", \"review_count\": 3, \"review_min\": 4.0, \"review_max\": 4.0, \"review_average\": 4.0, \"profile_name\": \"Jose Colon\", \"favourite_book\": \"The Awakening\", \"favourite_topic\": \"Fiction\", \"university_attended\": \"National Sun Yat-Sen University\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590012178579574",
+                    "2023-10-06 11:00:12.177 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A1246QXGXV4WES\", \"review_count\": 4, \"review_min\": 4.0, \"review_max\": 4.0, \"review_average\": 4.0, \"profile_name\": \"Marion K.\", \"favourite_book\": \"Gone with the Wind\", \"favourite_topic\": \"Fiction\", \"university_attended\": \"Newcastle University\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590012178577221",
+                    "2023-10-06 11:00:12.177 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A12442NKHNWM37\", \"review_count\": 6, \"review_min\": 5.0, \"review_max\": 5.0, \"review_average\": 5.0, \"profile_name\": \"\\\"dcdre\\\"\", \"favourite_book\": \"Lord of the flies\", \"favourite_topic\": \"Fiction\", \"university_attended\": \"University of Iowa\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590012178574834",
+                    "2023-10-06 11:00:12.177 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A1243O3H865E8X\", \"review_count\": 6, \"review_min\": 1.0, \"review_max\": 1.0, \"review_average\": 1.0, \"profile_name\": \"Turner\", \"favourite_book\": \"To kill a mockingbird\", \"favourite_topic\": \"Fiction\", \"university_attended\": \"Ghent University\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590012178572272",
+                    "2023-10-06 11:00:12.177 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A1241U6QCSX5YJ\", \"review_count\": 23, \"review_min\": 2.0, \"review_max\": 5.0, \"review_average\": 4.826086956521739, \"profile_name\": \"Erren Geraud Kelly\", \"favourite_book\": \"Catch 22\", \"favourite_topic\": \"Fiction\", \"university_attended\": \"King\\u2019s College London\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590012178569517",
+                    "                "
+                ],
+                [
+                    "1696590012178567045",
+                    "Example of a Serial Blog/Short Story Magazine Archived 20 January 2015 at the Wayback Machine"
+                ],
+                [
+                    "1696590012178564391",
+                    "\"Kate Colquhoun on the blurred boundaries between fiction and non-fiction\", La Cl\u00e9 des Langues, 11 September 2012."
+                ],
+                [
+                    "1696590012178561925",
+                    "                "
+                ],
+                [
+                    "1696590012178559491",
+                    "2023-10-06 11:00:12.176 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction External links***"
+                ],
+                [
+                    "1696590012178556832",
+                    "                "
+                ],
+                [
+                    "1696590012178553923",
+                    "                Eco, Umberto (15 July 2017). \"On the ontology of fictional characters: A semiotic approach\". Sign Systems Studies. 37 (1/2): 82\u201398. doi:10.12697/SSS.2009.37.1-2.04."
+                ],
+                [
+                    "1696590012178543446",
+                    "2023-10-06 11:00:12.176 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction Further reading***"
+                ],
+                [
+                    "1696590012176346553",
+                    "                "
+                ],
+                [
+                    "1696590012176340838",
+                    "Saricks, Joyce (2009). The Readers' Advisory Guide to Genre Fiction (2nd ed.). ALA Editions. p. 402."
+                ],
+                [
+                    "1696590012176338169",
+                    "                Rafferty, Terrence (4 February 2011). \"Reluctant Seer\". The New York Times Sunday Book Review. Retrieved 23 April 2012."
+                ],
+                [
+                    "1696590012176330100",
+                    "2023-10-06 11:00:12.176 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction References***"
+                ],
+                [
+                    "1696590012175768714",
+                    "                "
+                ],
+                [
+                    "1696590012175765901",
+                    "                The use of real events or real individuals as direct inspiration for imaginary works is known as fictionalization. The opposite circumstance, in which the physical world or a real turn of events seem influenced by past fiction, is commonly known as \"life imitating art\". The latter phrase is popularity associated with the Anglo-Irish fiction writer Oscar Wilde.The alteration of actual happenings into a fictional format, with this involving a dramatic representation of real events or people, is known as both fictionalization, or, more narrowly for visual performance works like in theatre and film, dramatization. According to the academic publication Oxford Reference, a work set up this way will have a \"narrative based partly or wholly on fact but written as if it were fiction\" such that \"[f]ilms and broadcast dramas of this kind often bear the label 'based on a true story'.\" In intellectual research, evaluating this process is a part of media studies.Examples of prominent fictionalization in the creative arts include those in the general context of World War II in popular culture and specifically Nazi German leaders such as Adolf Hitler in popular culture and Reinhard Heydrich in popular culture. For instance, American actor and comedian Charlie Chaplin portrayed the eccentric despot Adenoid Hynkel in the 1940 satirical film The Great Dictator. The unhinged, unintelligent figure fictionalized real events from the then ongoing Second World War in a way that presented fascist individuals as humorously irrational and pathetic. Many other villains take direct inspiration from real people while having fictional accents, appearances, backgrounds, names, and so on."
+                ],
+                [
+                    "1696590012175757321",
+                    "2023-10-06 11:00:12.175 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction Fictionalization as a concept***"
+                ],
+                [
+                    "1696590012175212171",
+                    "                "
+                ],
+                [
+                    "1696590012175209673",
+                    "The Internet has had a major impact on the creation and distribution of fiction, calling into question the feasibility of copyright as a means to ensure royalties are paid to copyright holders. Also, digital libraries such as Project Gutenberg make public domain texts more readily available. The combination of inexpensive home computers, the Internet, and the creativity of its users has also led to new forms of fiction, such as interactive computer games or computer-generated comics. Countless forums for fan fiction can be found online, where loyal followers of specific fictional realms create and distribute derivative stories. The Internet is also used for the development of blog fiction, where a story is delivered through a blog either as flash fiction or serial blog, and collaborative fiction, where a story is written sequentially by different authors, or the entire text can be revised by anyone using a wiki."
+                ],
+                [
+                    "1696590012175205386",
+                    "                Traditionally, fiction includes novels, short stories, fables, legends, myths, fairy tales, epic and narrative poetry, plays (including operas, musicals, dramas, puppet plays, and various kinds of theatrical dances). However, fiction may also encompass comic books, and many animated cartoons, stop motions, anime, manga, films, video games, radio programs, television programs (comedies and dramas), etc."
+                ],
+                [
+                    "1696590012175196729",
+                    "2023-10-06 11:00:12.175 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction Formats***"
+                ],
+                [
+                    "1696590012174667464",
+                    "                "
+                ],
+                [
+                    "1696590012174661307",
+                    "                Certain basic elements further help to define and break down all works of narrative, including all works of fictional narrative. Namely, all narratives include the elements of character, conflict, narrative mode, plot, setting, and theme. Characters are individuals inside a work of story, conflicts are the tension or problem that drives characters' thoughts and actions, narrative modes are the ways in which a story is communicated, plots are the sequence of events in a story, settings are the story's locations in time and space, and themes are deeper messages or interpretations about the story that its audience is left to discuss and reflect upon."
+                ],
+                [
+                    "1696590012174652031",
+                    "2023-10-06 11:00:12.174 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction Elements***"
+                ],
+                [
+                    "1696590012174015814",
+                    "                "
+                ],
+                [
+                    "1696590012174012771",
+                    "                Storytelling has existed in all human cultures, and each culture incorporates different elements of truth and fiction into storytelling. Early fiction was closely associated with history and myth. Greek poets such as Homer, Hesiod, and Aesop developed fictional stories that were told first through oral storytelling and then in writing. Prose fiction was developed in Ancient Greece, influenced by the storytelling traditions of Asia and Egypt. Distinctly fictional work was not recognized as separate from historical or mythological stories until the imperial period. Plasmatic narrative, following entirely invented characters and events, was developed through ancient drama and New Comedy. One common structure among early fiction is a series of strange and fantastic adventures as early writers test the limits of fiction writing. Milesian tales were an early example of fiction writing in Ancient Greece and Italy. As fiction writing developed in Ancient Greece, relatable characters and plausible scenarios were emphasized to better connect with the audience, including elements such as romance, piracy, and religious ceremonies. Heroic romance was developed in medieval Europe, incorporating elements associated with fantasy, including supernatural elements and chivalry.The structure of the modern novel was developed by Miguel de Cervantes with Don Quixote in the early-17th century. The novel became a primary medium of fiction in the 18th and 19th centuries. They were often associated with Enlightenment ideas such as empiricism and agnosticism. Realism developed as a literary style at this time. New forms of mass media developed in the late-19th and early-20th centuries, including popular-fiction magazines and early film. Interactive fiction was developed in the late-20th century through video games."
+                ],
+                [
+                    "1696590012174000951",
+                    "2023-10-06 11:00:12.173 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction History***"
+                ],
+                [
+                    "1696590012173418697",
+                    "                "
+                ],
+                [
+                    "1696590012173416064",
+                    "Literary critic James Wood argues that \"fiction is both artifice and verisimilitude\", meaning that it requires both creative inventions as well as some acceptable degree of believability to its audience, a notion often encapsulated in the poet Samuel Taylor Coleridge's idea of the audience's willing suspension of disbelief. The effects of experiencing fiction, and the way the audience is changed by the new information they discover, has been studied for centuries. Also, infinite fictional possibilities themselves signal the impossibility of fully knowing reality, provocatively demonstrating important notions of philosophy, such as there potentially being no criterion to measure constructs of reality."
+                ],
+                [
+                    "1696590012173406773",
+                    "                Typically, the fictionality of a work is publicly expressed and so the audience expects the work to deviate in some ways from the real world rather than presenting, for instance, only factually accurate portrayals or characters who are actual people. Because fiction is generally understood to not fully adhere to the real world, the themes and context of a work, such as if and how it relates to real-world issues or events, are open to interpretation. Since fiction is most long-established in the realm of literature (written narrative fiction), the broad study of the nature, function, and meaning of fiction is called literary theory, and the narrower interpretation of specific fictional texts is called literary criticism (with subsets like film criticism and theatre criticism also now long-established). Aside from real-world connections, some fictional works may depict characters and events within their own context, entirely separate from the known physical universe: an independent fictional universe. The creative art of constructing such an imaginary world is known as worldbuilding."
+                ],
+                [
+                    "1696590012173391059",
+                    "2023-10-06 11:00:12.173 | EVENT    | monologue.entities.examples.MyriadLoggers:topics:27 -  ***Fiction Definition and theory***"
+                ],
+                [
+                    "1696590011964499048",
+                    "2023-10-06 11:00:11.963 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A123F4P6UQ4AYH\", \"review_count\": 6, \"review_min\": 5.0, \"review_max\": 5.0, \"review_average\": 5.0, \"profile_name\": \"R. Razi\", \"favourite_book\": \"To kill a mockingbird\", \"favourite_topic\": \"Fiction\", \"university_attended\": \"Rice University\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590011963944493",
+                    "2023-10-06 11:00:11.963 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A1237ROTM7659\", \"review_count\": 6, \"review_min\": 4.0, \"review_max\": 5.0, \"review_average\": 4.833333333333333, \"profile_name\": \"Joymarie \\\"Lover of the Written Word\\\"\", \"favourite_book\": \"Red Tent\", \"favourite_topic\": \"Fiction\", \"university_attended\": \"Osaka University\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590011963942073",
+                    "2023-10-06 11:00:11.963 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A123078WHV9O42\", \"review_count\": 2, \"review_min\": 5.0, \"review_max\": 5.0, \"review_average\": 5.0, \"profile_name\": \"\\\"sassgurl10\\\"\", \"favourite_book\": \"The Giver\", \"favourite_topic\": \"Juvenile Fiction\", \"university_attended\": \"University of Pittsburgh\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590011963939515",
+                    "2023-10-06 11:00:11.963 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A122VFY1XCXCQT\", \"review_count\": 1, \"review_min\": 4.0, \"review_max\": 4.0, \"review_average\": 4.0, \"profile_name\": \"Laura\", \"favourite_book\": \"Summer Sisters : A Novel\", \"favourite_topic\": \"Fiction\", \"university_attended\": \"Yale University\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590011963936768",
+                    "2023-10-06 11:00:11.963 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A122H2TEE3VUKW\", \"review_count\": 13, \"review_min\": 1.0, \"review_max\": 5.0, \"review_average\": 4.384615384615385, \"profile_name\": \"Patrick Resing\", \"favourite_book\": \"Crime and Punishment\", \"favourite_topic\": \"Fiction\", \"university_attended\": \"University of Chicago\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590011963934208",
+                    "2023-10-06 11:00:11.963 | EVENT    | monologue.entities.examples.MyriadLoggers:ingest_book_reviewers_sample:51 - ```json{\"user_id\": \"A122CUKYZ3QLGT\", \"review_count\": 2, \"review_min\": 4.0, \"review_max\": 4.0, \"review_average\": 4.0, \"profile_name\": \"Franz Metcalf\", \"favourite_book\": \"The Lord of the Rings - Boxed Set\", \"favourite_topic\": \"Young Adult Fiction\", \"university_attended\": \"University of Basel\", \"__type__\": \"BookReviewers\", \"__key__\": \"user_id\", \"__namespace__\": \"examples\"}```"
+                ],
+                [
+                    "1696590011963928471",
+                    "                "
+                ],
+                [
+                    "1696590011963926110",
+                    "1966 Gene Deitch 12 minute version of The Hobbit"
+                ],
+                [
+                    "1696590011963923772",
+                    "Guide to U.S. editions of Tolkien books including The Hobbit"
+                ],
+                [
+                    "1696590011963921245",
+                    "Every UK edition of The Hobbit"
+                ],
+                [
+                    "1696590011963918440",
+                    "The Hobbit covers around the globe \u2013 gallery"
+                ],
+                [
+                    "1696590011963915916",
+                    "Collection of edition covers, 1937\u20132007"
+                ],
+                [
+                    "1696590011963913355",
+                    "The official Harper-Collins Tolkien website"
+                ],
+                [
+                    "1696590011963910283",
+                    "                "
+                ],
+                [
+                    "1696590011963901300",
+                    "2023-10-06 11:00:11.962 | EVENT    | monologue.entities.examples.MyriadLoggers:books:23 -  ***The Hobbit External links***"
+                ],
+                [
+                    "1696590011962435059",
+                    "                "
+                ],
+                [
+                    "1696590011962432771",
+                    "St. Clair, Gloriana (2000). \"Tolkien's Cauldron: Northern Literature and The Lord of the Rings\". Carnegie Mellon University."
+                ],
+                [
+                    "1696590011962430435",
+                    "Solopova, Elizabeth (2009). Languages, Myths and History: An Introduction to the Linguistic and Literary Background of J. R. R. Tolkien's Fiction. New York City: North Landing Books. ISBN 978-0-9816607-1-4."
+                ],
+                [
+                    "1696590011962427906",
+                    "Rateliff, John D. (2007). The History of the Hobbit. London: HarperCollins. ISBN 978-0-00-723555-1."
+                ],
+                [
+                    "1696590011962425493",
+                    "Lobdell, Jared C. (2004). The World of the Rings: Language, Religion, and Adventure in Tolkien. Open Court. ISBN 978-0-8126-9569-4."
+                ],
+                [
+                    "1696590011962423137",
+                    "Hammond, Wayne G.; Anderson, Douglas A. (1993). J. R. R. Tolkien: A Descriptive Bibliography. New Castle, DE: Oak Knoll Books. ISBN 0-938768-42-5."
+                ],
+                [
+                    "1696590011962420244",
+                    "Grenby, Matthew (2008). Children's Literature. Edinburgh University Press. ISBN 978-0-618-47885-9."
+                ],
+                [
+                    "1696590011962417796",
+                    "Drout, Michael D. C., ed. (2007). The J. R. R. Tolkien Encyclopedia: Scholarship and Critical Assessment. Routledge. ISBN 978-0-4159-6942-0."
+                ],
+                [
+                    "1696590011962415196",
+                    "Chance, Jane (2001). Tolkien's Art. University of Kentucky Press. ISBN 978-0-618-47885-9."
+                ],
+                [
+                    "1696590011962412698",
+                    "Carpenter, Humphrey, ed. (1981). The Letters of J. R. R. Tolkien. Boston: Houghton Mifflin. ISBN 978-0-395-31555-2."
+                ],
+                [
+                    "1696590011962410325",
+                    "Tolkien, J. R. R. (2003) [1937]. Anderson, Douglas A. (ed.). The Annotated Hobbit. London: HarperCollins. ISBN 978-0-00-713727-5.SecondaryCarpenter, Humphrey (1977). J. R. R. Tolkien: A Biography. New York: Ballantine Books. ISBN 978-0-04-928037-3."
+                ],
+                [
+                    "1696590011962407709",
+                    "\u2013\u2013\u2013 (1966). The Hobbit (3rd ed.). Boston: Houghton Mifflin. ISBN 978-0-395-07122-9.Tolkien, J. R. R. (1988) [1937]. Anderson, Douglas A. (ed.). The Annotated Hobbit. Houghton Mifflin. ISBN 978-0-3954-7690-1."
+                ]
+            ]
+        }
+    ],
+    "stats": {
+        "summary": {
+            "bytesProcessedPerSecond": 3412250,
+            "linesProcessedPerSecond": 10556,
+            "totalBytesProcessed": 78224,
+            "totalLinesProcessed": 242,
+            "execTime": 0.022924,
+            "queueTime": 5.6e-05,
+            "subqueries": 0,
+            "totalEntriesReturned": 100,
+            "splits": 0,
+            "shards": 0,
+            "totalPostFilterLines": 242,
+            "totalStructuredMetadataBytesProcessed": 0
+        },
+        "querier": {
+            "store": {
+                "totalChunksRef": 0,
+                "totalChunksDownloaded": 0,
+                "chunksDownloadTime": 0,
+                "chunk": {
+                    "headChunkBytes": 0,
+                    "headChunkLines": 0,
+                    "decompressedBytes": 0,
+                    "decompressedLines": 0,
+                    "compressedBytes": 0,
+                    "totalDuplicates": 0,
+                    "postFilterLines": 0,
+                    "headChunkStructuredMetadataBytes": 0,
+                    "decompressedStructuredMetadataBytes": 0
+                }
+            }
+        },
+        "ingester": {
+            "totalReached": 2,
+            "totalChunksMatched": 1,
+            "totalBatches": 2,
+            "totalLinesSent": 100,
+            "store": {
+                "totalChunksRef": 0,
+                "totalChunksDownloaded": 0,
+                "chunksDownloadTime": 0,
+                "chunk": {
+                    "headChunkBytes": 78224,
+                    "headChunkLines": 242,
+                    "decompressedBytes": 0,
+                    "decompressedLines": 0,
+                    "compressedBytes": 433617,
+                    "totalDuplicates": 0,
+                    "postFilterLines": 242,
+                    "headChunkStructuredMetadataBytes": 0,
+                    "decompressedStructuredMetadataBytes": 0
+                }
+            }
+        },
+        "cache": {
+            "chunk": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0
+            },
+            "index": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0
+            },
+            "result": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0
+            },
+            "statsResult": {
+                "entriesFound": 0,
+                "entriesRequested": 0,
+                "entriesStored": 0,
+                "bytesReceived": 0,
+                "bytesSent": 0,
+                "requests": 0,
+                "downloadTime": 0
+            }
+        }
+    }
+}

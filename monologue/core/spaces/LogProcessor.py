@@ -111,10 +111,37 @@ class LogProcessor:
 
     @staticmethod
     def log_lines_generator(log_text):
+        """
+        for dealing with multi line logs given a text file
+        """
         log_entry = ""
         log_entry_started = False
 
         for line in log_text.split("\n"):
+            if re.match(PREAMBLE_BEGINS_REGEX, line):
+                if log_entry_started:
+                    yield log_entry.strip()
+                log_entry = line
+                log_entry_started = True
+            elif log_entry_started:
+                log_entry += "\n" + line
+            else:
+                pass
+        if log_entry_started:
+            yield log_entry.strip()
+
+    @staticmethod
+    def log_lines_generator_from_generator(g):
+        """
+        Give another generator will consume for a match in lines
+        Its like the long text one which we will probably get rid of but is handy for tests
+        could refactor them to be dryer
+        """
+        log_entry = ""
+        log_entry_started = False
+
+        for line in g:
+            print(line)
             if re.match(PREAMBLE_BEGINS_REGEX, line):
                 if log_entry_started:
                     yield log_entry.strip()

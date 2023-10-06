@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: monologue
+spec:
+  containers:
+    - name: monologue
+      image: 286292902993.dkr.ecr.us-east-1.amazonaws.com/res-data:mono
+      imagePullPolicy: Always
+      #command: ["poetry", "run", "monologue", "test"]
+      command:
+        [
+          "poetry",
+          "run",
+          "monologue",
+          "generate",
+          "book_reviews",
+          "--file",
+          "s3://res-data-platform/samples/data/generated/books_reviewer_users_generated.feather",
+          "--limit",
+          "1000",
+        ]
+      resources:
+        limits:
+          memory: "2Gi"
+          cpu: "500m"
+      envFrom:
+        - secretRef:
+            name: mysecret
+
+  restartPolicy: OnFailure
+#redeploy
+#kc delete -f pod.yaml & kc apply -f pod.yaml
+#kc logs monologue -f
+#run ^ and then
+#poetry run monologue ingest --loki True

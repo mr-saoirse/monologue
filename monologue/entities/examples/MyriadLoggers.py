@@ -39,13 +39,13 @@ Sample data reader
 SAMPLE_ROOT = "/Users/sirsh/Downloads/monologue_dataset"
 
 
-def ingest_book_reviewers_sample(limit=10):
+def ingest_book_reviewers_sample(input_file=None, limit=100):
     """
     This illustrates
     """
     ww = WikiWalker()
     # lazy polar iterator over the rows
-    path = f"{SAMPLE_ROOT}/amz_books_reviewer_users_generated.feather"
+    path = input_file or f"{SAMPLE_ROOT}/amz_books_reviewer_users_generated.feather"
     _limit = 0
     for record in typed_record_iterator(path, BookReviewers):
         log_event(f"{record}")
