@@ -1,6 +1,7 @@
 # monologue [WIP]
 
-A project to illustrate integrating logging framework with ingestion into  Retrieval Augmented Generation (RAG) system. Python is used for agents. Python and Rust both used for the ingestion back-end.
+A project to illustrate integrating logging framework for ingestion into Retrieval Augmented Generation (RAG) system. Python is used for agents. Python and Rust (todo) both used for the ingestion back-end.
+This is very much experimental and we have not yet even satisfactorily answered the questions _should we do this in the first place? / where might this be useful?_
 
 See the medium article:
 
@@ -36,6 +37,8 @@ poetry install
 poetry run monologue [args]
 ```
 
+_run the code from within poetry or just run cli directly_
+
 For **Docker** you can build the docker file from the root and test that you can run with the test script. This is just a deps check.
 
 ```bash
@@ -68,8 +71,8 @@ Using the output file use the (slow) single line parser to test
 cli ingest -f out.log
 ```
 
-If you ave run the pod on kubernetes to generate sample logs
+If you can run the pod on kubernetes to generate sample logs
 
 ```bash
-cli ingest --loki
+cli ingest --loki True
 ```
