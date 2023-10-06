@@ -77,15 +77,28 @@ class DuckDBClient:
         """
         )
 
-    def inspect_enums(self, uri, enum_threshold=200, max_str_length=100):
+    def inspect_enums(
+        self, uri, enum_threshold=200, max_str_length=100, omit_fields=None
+    ):
+        """
+        inspect enums is used to send context to LLM
+        dont use this if you have sensitive data in fields or add protection
+
+        for example this can be used if we ask vague questions
+        or questions that reference misspelled or alternately spelt data - the LLM can make sense of it
+
+        this is probably necessary for SQL types to be useful but avoides sending too much data in context
+        """
         df = self.execute(f"SELECT * FROM '{uri}'")
 
         def try_unique(c):
             try:
                 # dont allow big strings (polars notation)
                 l = df[c].str.lengths().mean()
-                if l > max_str_length:
+                # filter by sending back max threshold in these cases
+                if l > max_str_length or c in (omit_fields or []):
                     return enum_threshold
+                # if we are happy, return the list of enumerated values for LLM context
                 return len(df[c].unique())
 
             except:
