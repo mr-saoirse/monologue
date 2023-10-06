@@ -35,6 +35,20 @@ def exists(uri):
     raise Exception("Not implemented for scheme but easy to fix")
 
 
+def ls(root, file_type="*", search=f"**/", **kwargs):
+    """
+    deep listing
+    """
+    file_type = f"*.{file_type}" if file_type else None
+    search = f"{root}/{search}{file_type}"
+    results = [f"s3://{f}" for f in s3fs.S3FileSystem().glob(search)]
+    return results
+
+
+def glob(pattern, **kwargs):
+    return s3fs.S3FileSystem().glob(pattern, **kwargs)
+
+
 def read(uri, lazy=False) -> pl.DataFrame:
     """
     read data to polar data

@@ -23,18 +23,19 @@ VECTOR_STORE_ROOT_URI = f"s3://{S3BUCKET}/stores/vector/v0"
 
 
 class LanceDataTable:
-    def __init__(self, name, space=None, schema=None):
+    def __init__(self, namespace, name, space=None, schema=None):
         self._name = name
-        self._full_name = f"{space}/{name}" if space else f"{name}"
-        # the uri is where the dataset lives - we can do polar and duck things with it
-        self._uri = f"{VECTOR_STORE_ROOT_URI}/{self._full_name}.lance"  #
-        self._db = lancedb.connect(VECTOR_STORE_ROOT_URI)
+        db_root = f"{VECTOR_STORE_ROOT_URI}/{namespace}"
+        self._uri = f"{db_root}/{name}.lance"  #
+        self._db = lancedb.connect(db_root)
         self._duck_client = DuckDBClient()
         try:
-            self._table = self._db.open_table(self._full_name)
+            self._table = self._db.open_table(self._name)
         except:
-            logger.warning(f"Table does not exist - creating it from schema {schema}")
-            self._table = self.table_from_schema(self._full_name, schema=schema)
+            logger.warning(
+                f"Table does not exist - creating {db_root}:{self._name} from schema {schema}"
+            )
+            self._table = self.table_from_schema(self._name, schema=schema)
 
     @property
     def name(self):

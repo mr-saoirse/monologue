@@ -138,6 +138,7 @@ class LokiClient:
 
     def query(self, log_ql_query, limit=None, try_parse=True):
         """
+        see: https://grafana.com/docs/loki/latest/query/
         example: 'sum(rate({app="promtail"}[10m])) by (level)'
         """
         response = requests.get(self._route("query"), params={"query": log_ql_query})
