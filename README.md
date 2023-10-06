@@ -3,7 +3,7 @@
 A project to illustrate integrating logging framework for ingestion into Retrieval Augmented Generation (RAG) system. Python is used for agents. Python and Rust (todo) both used for the ingestion back-end.
 This is very much experimental and we have not yet even satisfactorily answered the questions _should we do this in the first place? / where might this be useful?_
 
-See the medium article:
+See the medium article: [Logging is all your need](https://medium.com/@mrsirsh/logging-is-all-you-need-dc578d69e827)
 
 ---
 
