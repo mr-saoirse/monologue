@@ -24,9 +24,9 @@ LOKI_ADDR = os.environ.get("LOKI_ADDR", "http://localhost:3100")
 
 
 class LogEntry(BaseModel):
-    level: str
+    level: typing.Optional[str]
     ts: str
-    caller: str
+    caller: typing.Optional[str]
     msg: str
     name: typing.Optional[str]
     op: typing.Optional[str]
@@ -36,13 +36,21 @@ class LogInfo(BaseModel):
     app: str
     container: str
     filename: str
-    instance: str
+    instance: typing.Optional[str]
     job: str
     namespace: str
     node_name: str
     pod: str
     stream: str
     values: typing.List[LogEntry]
+
+    def __iter__(self) -> str:
+        """
+        the iterator only returns the log lines
+        if you want to get entire structure use .values
+        """
+        for v in self.values:
+            yield v.msg
 
 
 class LokiClient:
@@ -65,7 +73,11 @@ class LokiClient:
         self._root = f"{LOKI_ADDR}/loki/api/v1"
 
     @staticmethod
-    def parse_log_string(s):
+    def parse_log_kv_string(s):
+        """
+        Sometimes we can parse this mode - here for building up lib
+        pass to values_parser_fn
+        """
         pattern = r'(\w+)="(.*?)"|(\w+)=([^\s]+)'
         matches = re.findall(pattern, s)
         key_value_pairs = {}
@@ -77,7 +89,7 @@ class LokiClient:
         return key_value_pairs
 
     @staticmethod
-    def parse_results(results):
+    def parse_results(results, values_papers_fn=None):
         """
         WIP
         """
@@ -86,7 +98,10 @@ class LokiClient:
             for r in results:
                 stream = r["stream"]
                 values = r["values"]
-                values = [LokiClient.parse_log_string(v[1]) for v in values]
+                if values_papers_fn:
+                    values = [values_papers_fn(v[1]) for v in values]
+                else:
+                    values = [{"msg": v[1], "ts": v[0]} for v in values]
                 stream["values"] = values
                 yield LogInfo(**stream)
 
