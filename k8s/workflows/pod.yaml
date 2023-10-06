@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
     - name: monologue
-      image: 286292902993.dkr.ecr.us-east-1.amazonaws.com/res-data:mono
+      image: IMAGE
       imagePullPolicy: Always
       #command: ["poetry", "run", "monologue", "test"]
       command:
@@ -16,7 +16,7 @@ spec:
           "generate",
           "book_reviews",
           "--file",
-          "s3://res-data-platform/samples/data/generated/books_reviewer_users_generated.feather",
+          "s3://BUCKET/samples/data/generated/books_reviewer_users_generated.feather",
           "--limit",
           "1000",
         ]
