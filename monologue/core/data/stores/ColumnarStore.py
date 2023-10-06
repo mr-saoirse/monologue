@@ -34,6 +34,7 @@ class ColumnarDataStore(AbstractStore):
         self._db = DuckDBClient()
         self._table_path = f"{COLUMN_STORE_ROOT_URI}/{self._entity_namespace}/{self._entity_name}/parts/0/data.parquet"
         # base class
+
         self._extra_context = extra_context
 
     def load(self):
@@ -41,6 +42,9 @@ class ColumnarDataStore(AbstractStore):
 
     def __call__(self, question):
         return self.as_tool().run(question)
+
+    def __repr__(self) -> str:
+        return f"ColumnarDataStore({self._table_path})"
 
     @property
     def query_context(self):

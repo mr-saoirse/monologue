@@ -18,3 +18,7 @@ def tools_for_entity(entity: AbstractEntity) -> typing.List[AbstractStore]:
         VectorDataStore(entity=entity),
         EntityDataStore(entity=entity),
     ]
+
+
+from .VectorStore import VECTOR_STORE_ROOT_URI
+from .ColumnarStore import COLUMN_STORE_ROOT_URI

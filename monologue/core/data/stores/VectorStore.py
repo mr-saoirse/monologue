@@ -21,6 +21,7 @@ from monologue.core.data.vectors import LanceDataTable
 from monologue import logger
 import warnings
 from . import AbstractStore
+from monologue.core.data.vectors.lance import VECTOR_STORE_ROOT_URI
 
 
 class VectorDataStore(AbstractStore):
@@ -42,17 +43,16 @@ class VectorDataStore(AbstractStore):
     def __init__(
         self,
         entity: AbstractEntity,
-        sep: str = "_",
         alias: str = None,
         extra_context: str = None,
     ):
         super().__init__(entity=entity, alias=alias, extra_context=extra_context)
-        self._full_entity_name = (
-            alias or f"{self._entity_namespace}{sep}{self._entity_name}"
-        )
+
         self._embeddings_provider = self._entity.embeddings_provider
         # you need to ensure the entity has a vector column - in pyarrow it becomes a fixed length thing
-        self._data = LanceDataTable(name=self._full_entity_name, schema=entity)
+        self._data = LanceDataTable(
+            namespace=self._entity_namespace, name=self._entity_name, schema=entity
+        )
         self._table_name = f"{self._entity_namespace}_{self._entity_name}"
 
         with warnings.catch_warnings():

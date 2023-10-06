@@ -18,6 +18,14 @@ import sys
 import pandas as pd
 
 sys.path.append("../")
+ 
+```
+
+```python
+from monologue.core.spaces import IndexManager
+
+im = IndexManager()
+im.list_physical_stores()
 ```
 
 ```python
@@ -101,7 +109,6 @@ tool.run("What is least popular destination in new york city? Who has travelled 
 ```python
 import pandas as pd
 from monologue.core.data.stores import VectorDataStore
-from monologue.core.utils.ops import pydantic_to_pyarrow_schema
 from monologue.entities.examples import *
 ```
 
@@ -117,7 +124,7 @@ data.tail()
 ```python
 store = VectorDataStore(AvengingPassengersInstruct)
 data = [AvengingPassengersInstruct(**d) for d in data.to_dict('records')]
-#result = store.add(data)
+result = store.add(data)
 ```
 
 ```python
@@ -144,7 +151,7 @@ data.head()
 
 ```python
 store = VectorDataStore(Places)
-#e = store.add(records[:10],plan=False)
+
 ```
 
 ```python
@@ -162,10 +169,6 @@ store("What can you tell me about the civil airport in East Elmhurst Queens?")
 
 ```python
 store.query_index("What can you tell me about civil airport in East Elmhurst Queens?")
-```
-
-```python
-from monologue.
 ```
 
 ```python

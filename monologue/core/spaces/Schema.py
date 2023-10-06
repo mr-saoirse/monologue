@@ -16,12 +16,11 @@ SPACES: how data are stored in monologue
 
 """
 
-
-from pydantic import BaseModel, Field
+from monologue.entities import AbstractVectorStoreEntry, Field
 import typing
 
 
-class SpaceSubscription(BaseModel):
+class SpaceSubscription(AbstractVectorStoreEntry):
     """
     A subscription is an expression of interest or jurisdiction
     Usually it can be mapped to tools for example the space description could be used to generate a tool description
@@ -33,7 +32,8 @@ class SpaceSubscription(BaseModel):
     # space qual can be default, temporal split, or just a view hash
     id: str
     name: str
-    description: str
+    # this is the descriptive text
+    text: str
     # columnar etc
     store_type: str
     # we can inherit a space from another space by restricting it or copying data from it

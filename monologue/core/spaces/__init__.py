@@ -31,5 +31,6 @@ class Response(BaseModel):
 
 """
 
-from .SpaceSubscription import SpaceSubscription
+from .Schema import SpaceSubscription
 from .LogProcessor import LogProcessor
+from .IndexManager import IndexManager
