@@ -22,6 +22,7 @@ from monologue import logger
 import warnings
 from . import AbstractStore
 from monologue.core.data.vectors.lance import VECTOR_STORE_ROOT_URI
+from tqdm import tqdm
 
 
 class VectorDataStore(AbstractStore):
@@ -53,7 +54,7 @@ class VectorDataStore(AbstractStore):
         self._data = LanceDataTable(
             namespace=self._entity_namespace, name=self._entity_name, schema=entity
         )
-        self._table_name = f"{self._entity_namespace}_{self._entity_name}"
+        self._table_name = f"/{self._entity_namespace}/{self._entity_name}"
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -79,11 +80,20 @@ class VectorDataStore(AbstractStore):
             self._query_engine = index.as_query_engine()
 
     def query_index(self, question):
+        """
+        this is the llama_index query engine so this does whatever that does
+        """
         return self._query_engine.query(question)
 
-    def add(self, records: List[AbstractEntity], plan=False):
+    def add(
+        self,
+        records: List[AbstractEntity],
+        plan=False,
+    ):
         """
         loads data into the vector store if there is any big text in there
+        plan false means you dont insert it and just look at it. its a testing tool.
+        par_do means we will parallelize the work of computing, which we generally want to do
         """
 
         def add_embedding_vector(d):
@@ -93,9 +103,11 @@ class VectorDataStore(AbstractStore):
         if len(records):
             # TODO: coerce some types - anything that becomes a list of types is fine
             logger.info(f"Adding {len(records)} to {self._table_name}...")
-            records_with_embeddings = [
-                add_embedding_vector(r.large_text_dict()) for r in records
-            ]
+            records_with_embeddings = tqdm(
+                (add_embedding_vector(r.large_text_dict()) for r in records),
+                total=len(records),
+            )
+
             if plan:
                 return records_with_embeddings
             self._data.upsert_records(records_with_embeddings)
@@ -109,6 +121,9 @@ class VectorDataStore(AbstractStore):
         return self._data.load()
 
     def __call__(self, question):
+        """
+        convenient wrapper to ask questions of the tool
+        """
         return self.as_tool().run(question)
 
     def as_tool(self, model="gpt-4"):

@@ -1,11 +1,11 @@
-from typing import Union, List, Optional
-from pydantic import Field, BaseModel, create_model, BaseConfig, root_validator
+from typing import List, Optional
+from pydantic import Field, BaseModel, create_model, root_validator
 import json
 import numpy as np
 import typing
 from . import load_type
 
-# When we are mature we would store configuration look this somewhere more central
+# When we are mature we would store configuration like this somewhere more central
 INSTRUCT_EMBEDDING_VECTOR_LENGTH = 768
 OPEN_AI_EMBEDDING_VECTOR_LENGTH = 1536
 

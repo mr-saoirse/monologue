@@ -50,6 +50,10 @@ class IndexManager(KeyRegistry):
 
         return [{"mode": t[0], "namespace": t[1], "name": t[2]} for t in tuples]
 
+    @staticmethod
+    def suggest_initial_tools(context):
+        return None
+
 
 """
 Advanced

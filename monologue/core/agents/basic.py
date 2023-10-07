@@ -56,6 +56,7 @@ class BasicToolUsingAgent(BasicAgent):
     """ """
 
     def __init__(self, tools, context=None, **kwargs):
+        assert tools, "For now you need to specify a tool - in future ill wing it"
         self._tools = tools
         self._model = kwargs.get("model", DEFAULT_LLM_MODEL)
         self._temperature = kwargs.get("temperature", 0.01)
