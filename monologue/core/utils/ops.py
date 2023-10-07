@@ -12,6 +12,22 @@ from langchain.chat_models import ChatOpenAI
 import pandas as pd
 import hashlib
 import uuid
+from multiprocessing import Pool, cpu_count
+
+
+def counter(i):
+    import time
+
+    time.sleep(1)
+    print("done")
+
+
+def map_parallel(f, data, cpus=cpu_count() - 1):
+    """
+    n the number of works to process the function f over the the data
+    """
+    with Pool(cpus) as pool:
+        return pool.map(f, data)
 
 
 def scrape_html_paragraphs(uri):
