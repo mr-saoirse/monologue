@@ -103,16 +103,18 @@ class VectorDataStore(AbstractStore):
         if len(records):
             # TODO: coerce some types - anything that becomes a list of types is fine
             logger.info(f"Adding {len(records)} to {self._table_name}...")
-            records_with_embeddings = tqdm(
-                (add_embedding_vector(r.large_text_dict()) for r in records),
-                total=len(records),
+            records_with_embeddings = list(
+                tqdm(
+                    (add_embedding_vector(r.large_text_dict()) for r in records),
+                    total=len(records),
+                )
             )
 
             if plan:
                 return records_with_embeddings
             self._data.upsert_records(records_with_embeddings)
-            logger.info(f"Records added")
-        return records
+            logger.info(f"Records added to {self._data}")
+        return records_with_embeddings
 
     def load(self):
         """
