@@ -16,7 +16,7 @@ from monologue import logger
 from monologue.core.agents import TheLangchainCallbackHandler
 import openai
 import json
-
+from monologue.core.utils import ops
 
 DEFAULT_LLM_MODEL = os.environ.get("MONO_LLM_MODEL", "gpt-4")
 
@@ -198,11 +198,22 @@ class QuestionGeneratingAgent:
         return None
 
 
-def open_ai_functions(functions, question, limit=10):
+def call_open_ai_with_functions(functions, question, limit=10):
     """
     WIP
     will probably deprecate the use of the langchain agents and build out one agent interface from this
+
+    trying to develop a functional paradigm here
+    functions can have decorators that make them into execution graphs
+    the chat interface just runs in a loop and reads the message context
+    we can prune the message context as part of the framework
+    generally, we can collect all context in our framework
+
+    pruner(i,messages)
+
+
     """
+
     plan = f""" You are an assistant that answers questions using provided data and functions.   """
 
     messages = [
@@ -210,31 +221,30 @@ def open_ai_functions(functions, question, limit=10):
         {"role": "user", "content": question},
     ]
 
-    for i in range(limit):
+    # apply any sort of aliasing in general - compatible with what we describe to OPEN AI
+    functions_map = {f.__name__: f for f in functions}
+
+    for _ in range(limit):
         response = openai.ChatCompletion.create(
             model=DEFAULT_LLM_MODEL,
             messages=messages,
-            functions=functions,
+            # helper that inspects functions and makes the open ai spec
+            functions=ops.parse_function_description(functions),
             function_call="auto",
         )
 
         response_message = response["choices"][0]["message"]
         # print('thinking....', response_message.get('content'))
-
-        if response_message.get("function_call"):
-            function_name = response_message["function_call"]["name"]
-            function_to_call = eval(function_name)
-            function_args = json.loads(response_message["function_call"]["arguments"])
-            # print(f"""{function_name}('{function_args.get("text")}')""")
-            function_response = function_to_call(
-                text=function_args.get("text"),
+        function_call = response_message.get("function_call")
+        if function_call:
+            function_response = functions_map[function_call["name"]](
+                **json.loads(function_call["arguments"]),
             )
-
             messages.append(response_message)
             messages.append(
                 {
                     "role": "function",
-                    "name": function_name,
+                    "name": function_call["name"],
                     "content": function_response,
                 }
             )

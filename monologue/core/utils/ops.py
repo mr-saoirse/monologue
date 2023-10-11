@@ -33,6 +33,7 @@ def parse_function_description(func):
     """
     For open AI functions we can use something like this to generate the description for the function
     This will evolve and can be tested with use cases
+    It assumes certain conventions. can be married with unit tests on functions to check conformance.
     """
     function_name = func.__name__
     docstring = func.__doc__
