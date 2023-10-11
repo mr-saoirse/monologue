@@ -4,9 +4,9 @@ from monologue.core.data.io import ls
 from . import SpaceSubscription
 
 
-class IndexManager(KeyRegistry):
+class SpaceManager(KeyRegistry):
     """
-    The index manager manages subscriptions
+    The space(index) manager manages subscriptions
     subscriptions are a queryable set of spaces that can be managed
     - We store some keys in memory (explore configure subsets of fields for entity store)
     - We store subscriptions in LanceDB so we can do text search on them
@@ -35,9 +35,12 @@ class IndexManager(KeyRegistry):
         """
         pass
 
-    def list_physical_stores(self):
+    def get_physical_stores(self):
         """
         using our path convention, find all the stores, namespaces and names
+        f"s3://{S3BUCKET}/stores/<vector>/v0/<namespace>/<name>/"
+        f"s3://{S3BUCKET}/stores/<columnar>/v0/<namespace>/<name>"
+
         """
         manifests = ls(COLUMN_STORE_ROOT_URI) + ls(VECTOR_STORE_ROOT_URI)
 
