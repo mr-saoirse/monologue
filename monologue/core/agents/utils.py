@@ -1,5 +1,25 @@
 import openai
 import json
+import typing
+
+
+def summarize_data(records: typing.List[dict]):
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are the guy that summarizes tabular data, focus on text fields and perhaps using an rank, distance of rating fields to emphasize specific parts",
+            },
+            {
+                "role": "user",
+                "content": f"Summarize with emphasis the data in: {records}",
+            },
+            {"role": "user", "content": f"output a summary"},
+        ],
+    )
+    data = response["choices"][0]["message"]["content"]
+    return data
 
 
 def pydantic_type_generator(d: dict, file_out=None):

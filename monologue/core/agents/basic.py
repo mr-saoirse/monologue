@@ -222,14 +222,19 @@ def call_open_ai_with_functions(functions, question, limit=10):
     ]
 
     # apply any sort of aliasing in general - compatible with what we describe to OPEN AI
-    functions_map = {f.__name__: f for f in functions}
+    functions_map = {f.__name__ + ops.str_hash(): f for f in functions}
+    function_descriptions = [
+        ops.parse_function_description(k, f) for k, f in functions_map.items()
+    ]
+
+    # return function_descriptions
 
     for _ in range(limit):
         response = openai.ChatCompletion.create(
             model=DEFAULT_LLM_MODEL,
             messages=messages,
             # helper that inspects functions and makes the open ai spec
-            functions=ops.parse_function_description(functions),
+            functions=function_descriptions,
             function_call="auto",
         )
 
@@ -245,7 +250,7 @@ def call_open_ai_with_functions(functions, question, limit=10):
                 {
                     "role": "function",
                     "name": function_call["name"],
-                    "content": function_response,
+                    "content": json.dumps(function_response),
                 }
             )
 

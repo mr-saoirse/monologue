@@ -85,6 +85,20 @@ class VectorDataStore(AbstractStore):
         """
         return self._query_engine.query(question)
 
+    def run_search(self, query, limit=3, probes=20, refine_factor=10):
+        """
+        perform the vector search for the query
+        """
+        V = self._embeddings.embed_query(query)
+
+        return (
+            self._data.table.search(V)
+            .limit(limit)
+            .nprobes(probes)
+            .refine_factor(refine_factor)
+            .to_df()
+        )[["id", "text", "_distance"]].to_dict("records")
+
     def add(
         self,
         records: List[AbstractEntity],
@@ -126,7 +140,7 @@ class VectorDataStore(AbstractStore):
         """
         convenient wrapper to ask questions of the tool
         """
-        return self.as_tool().run(question)
+        return self.run_search(question)
 
     def as_tool(self, model="gpt-4"):
         """
@@ -151,3 +165,19 @@ class VectorDataStore(AbstractStore):
                 About the entity: {self._about_entity}
                 """,
         )
+
+    def as_function(self, question: str):
+        """
+        The full vector text search tool provides rich narrative context. Use this tool when asked general questions of a descriptive nature
+        General descriptive questions are those that are less quantitative or statistical in nature.
+        This particular function should be used to answer questions about {self._entity_name}
+
+        :param question: the question being asked
+
+        """
+
+        results = self.run_search(question)
+        # audit
+        # todo do we want these to be polar?
+        logger.debug(results)
+        return results
