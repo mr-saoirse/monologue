@@ -41,7 +41,7 @@ class ColumnarDataStore(AbstractStore):
         return read(self._table_path)
 
     def __call__(self, question):
-        return self.as_tool().run(question)
+        return self.run_search(question)
 
     def __repr__(self) -> str:
         return f"ColumnarDataStore({self._table_path})"
@@ -57,57 +57,6 @@ class ColumnarDataStore(AbstractStore):
     def fetch_entities(self, limit=10) -> List[AbstractEntity]:
         data = self.query(f"SELECT * FROM {self._entity_name} LIMIT {limit}").to_dicts()
         return [self._entity(**d) for d in data]
-
-    def as_tool(
-        self,
-        return_type="dict",
-        build_enums=True,
-        limit_table_rows=200,
-        llm_model="gpt-4",
-    ):
-        """
-        Create a tool for answering questions about the entity
-        """
-
-        def parse_out_sql_and_try_clean(s):
-            if "```" in s:
-                s = s.split("```")[1].replace("sql", "").strip("\n")
-            return s.replace("CURRENT_DATE ", "CURRENT_DATE()")
-
-        llm = ChatOpenAI(model_name=llm_model, temperature=0.0)
-
-        enums = {} if not build_enums else self._db.inspect_enums(self._table_path)
-
-        def ask(question):
-            prompt = f"""For a table called TABLE with the {self._fields}, and the following column enum types {enums} ignore any columns asked that are not in this schema and give
-                me a DuckDB dialect sql query without any explanation that answers the question below. 
-                Question: {question} """
-            logger.debug(prompt)
-            query = llm.predict(prompt)
-            query = query.replace("TABLE", f"'{self._table_path}'")
-            try:
-                query = parse_out_sql_and_try_clean(query)
-                logger.debug(query)
-                data = self._db.execute(query)
-                if limit_table_rows:
-                    data = data[:limit_table_rows]
-                if return_type == "dict":
-                    return data.to_dicts()
-                return data
-            # TODO better LLM and Duck exception handling
-            except Exception as ex:
-                return []
-
-        return Tool(
-            name=f"Stats and data table tool relating to {self._entity_namespace} {self._entity_name}",
-            func=ask,
-            description=f"""Use this tool to answer questions about aggregates or statistics or to get sample values or lists of values relating to {self._entity_namespace} {self._entity_namespace}. 
-            Do not select any values that are not in the provided list of columns. 
-            Provide full sentence questions to this tool. If 0 results are returned, do not trust this tool completely.
-            Added context: {self._extra_context}
-            About the entity: {self._about_entity}
-            """,
-        )
 
     def add(self, records: List[AbstractEntity], mode="merge"):
         """
@@ -125,3 +74,70 @@ class ColumnarDataStore(AbstractStore):
                 else write(self._table_path, records)
             )
         return records
+
+    def run_search(
+        self,
+        question,
+        return_type="dict",
+        build_enums=True,
+        limit_table_rows=200,
+        llm_model="gpt-4",
+    ):
+        def parse_out_sql_and_try_clean(s):
+            if "```" in s:
+                s = s.split("```")[1].replace("sql", "").strip("\n")
+            return s.replace("CURRENT_DATE ", "CURRENT_DATE()")
+
+        llm = ChatOpenAI(model_name=llm_model, temperature=0.0)
+
+        enums = {} if not build_enums else self._db.inspect_enums(self._table_path)
+
+        prompt = f"""For a table called TABLE with the {self._fields}, and the following column enum types {enums} ignore any columns asked that are not in this schema and give
+            me a DuckDB dialect sql query without any explanation that answers the question below. 
+            Question: {question} """
+        logger.debug(prompt)
+        query = llm.predict(prompt)
+        query = query.replace("TABLE", f"'{self._table_path}'")
+        try:
+            query = parse_out_sql_and_try_clean(query)
+            logger.debug(query)
+            data = self._db.execute(query)
+            if limit_table_rows:
+                data = data[:limit_table_rows]
+            if return_type == "dict":
+                return data.to_dicts()
+            return data
+        # TODO better LLM and Duck exception handling
+        except Exception as ex:
+            return []
+
+    def as_tool(
+        self,
+    ):
+        """
+        Create a tool for answering questions about the entity
+        """
+
+        return Tool(
+            name=f"Stats and data table tool relating to {self._entity_namespace} {self._entity_name}",
+            func=self.run_search,
+            description=f"""Use this tool to answer questions about aggregates or statistics or to get sample values or lists of values relating to {self._entity_namespace} {self._entity_namespace}. 
+            Do not select any values that are not in the provided list of columns. 
+            Provide full sentence questions to this tool. If 0 results are returned, do not trust this tool completely.
+            Added context: {self._extra_context}
+            About the entity: {self._about_entity}
+            """,
+        )
+
+    def as_function(self, question: str):
+        """
+        The full columnar data tool provides statistical and quantitative results. Usually can be used to answer questions such as how much, rank, count etc.
+        this particular function should be used to answer questions about {self._entity_name}
+
+        :param question: the question being asked
+        """
+
+        results = self.run_search(question)
+        # audit
+        logger.debug(results)
+        return results

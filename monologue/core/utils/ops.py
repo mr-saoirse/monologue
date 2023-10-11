@@ -29,13 +29,13 @@ def python_type_to_json_type(python_type):
         return "object"
 
 
-def parse_function_description(func):
+def parse_function_description(key, func):
     """
     For open AI functions we can use something like this to generate the description for the function
     This will evolve and can be tested with use cases
     It assumes certain conventions. can be married with unit tests on functions to check conformance.
     """
-    function_name = func.__name__
+    function_name = key  # func.__name__
     docstring = func.__doc__
     type_hints = typing.get_type_hints(func)
 
@@ -55,7 +55,7 @@ def parse_function_description(func):
                             start + len(param_marker) : end
                         ].strip()
 
-            parameters[parameter_name] = {
+            parameters = {
                 "type": "object",
                 "properties": {
                     parameter_name: {
