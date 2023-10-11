@@ -134,11 +134,12 @@ class VectorDataStore(AbstractStore):
         qa = RetrievalQA.from_chain_type(
             llm=ChatOpenAI(model_name=model, temperature=0.0),
             chain_type="stuff",
+            # search_kwargs={"k":2}
             retriever=self._langchain_vector_db.as_retriever(),
         )
 
         return Tool(
-            name=f"Further details tool relate to {self.name} entities",
+            name=f"Further details tool related to {self.name} entities",
             func=qa.run,
             # CHECK PROMPT SPECIFICITY
             description=f"""If and only if the other tools return no results, use this tool to get extra information about any {self.name} entity that you are asked about.  

@@ -7,12 +7,70 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from langchain.chat_models import ChatOpenAI
+import typing
 
 # deprecate as a dep
 import pandas as pd
 import hashlib
 import uuid
 from multiprocessing import Pool, cpu_count
+
+
+def python_type_to_json_type(python_type):
+    if python_type == int:
+        return "integer"
+    elif python_type == float:
+        return "number"
+    elif python_type == str:
+        return "string"
+    elif python_type == bool:
+        return "boolean"
+    else:
+        return "object"
+
+
+def parse_function_description(func):
+    """
+    For open AI functions we can use something like this to generate the description for the function
+    This will evolve and can be tested with use cases
+    """
+    function_name = func.__name__
+    docstring = func.__doc__
+    type_hints = typing.get_type_hints(func)
+
+    description = docstring.strip().split("\n", 1)[0].strip() if docstring else ""
+
+    parameters = {}
+    for parameter_name, parameter_type in type_hints.items():
+        if parameter_name != "return":
+            parameter_description = None
+            if docstring:
+                param_marker = f":param {parameter_name}:"
+                start = docstring.find(param_marker)
+                if start != -1:
+                    end = docstring.find("\n", start)
+                    if end != -1:
+                        parameter_description = docstring[
+                            start + len(param_marker) : end
+                        ].strip()
+
+            parameters[parameter_name] = {
+                "type": "object",
+                "properties": {
+                    parameter_name: {
+                        "type": python_type_to_json_type(parameter_type),
+                        "description": parameter_description,
+                    }
+                },
+            }
+
+    result = {
+        "name": function_name,
+        "description": description,
+        "parameters": parameters,
+    }
+
+    return result
 
 
 def counter(i):
@@ -58,8 +116,8 @@ def parse_fenced_code_blocks(input_string, try_parse=True, select_type="json"):
     code_blocks = []
     for match in matches:
         code_block = match.group(1) if match.group(1) else match.group(2)
-        if code_block[:4] == select_type:
-            code_block = code_block[4:]
+        if code_block[: len(select_type)] == select_type:
+            code_block = code_block[len(select_type) :]
         code_block.strip()
         if try_parse and select_type == "json":
             code_block = json.loads(code_block)

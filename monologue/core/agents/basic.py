@@ -14,6 +14,8 @@ from langchain.output_parsers import PydanticOutputParser
 from monologue.core.agents.prompts import ZeroShotPrompt
 from monologue import logger
 from monologue.core.agents import TheLangchainCallbackHandler
+import openai
+import json
 
 
 DEFAULT_LLM_MODEL = os.environ.get("MONO_LLM_MODEL", "gpt-4")
@@ -157,7 +159,7 @@ class QuestionGeneratingAgent:
     The ER tool could be handy with pointer to other tools
     The more info tools could also provide some general information rather than empty results
 
-    agent("By looking at the descriptions from tools provided, infer a graph of relationships from the metadata that the tools provide - represent the graph as triplets. Proide one example from the data for each triplet")
+    agent("By looking at the descriptions from tools provided, infer a graph of relationships from the metadata that the tools provide - represent the graph as triplets. Provide one example from the data for each triplet")
 
     Based on the information provided by the tools, the following triplets can be inferred:\n\n1. (AvengingPassengersInstruct, travels_in, Places) - This relationship indicates that the AvengingPassengersInstruct entities travel in the Places entities. An example of this would be a passenger named "Phillip Javert" traveling in "Manhattan".\n\n2. (Places, has, NycTripEvent) - This relationship indicates that the Places entities have NycTripEvent entities. An example of this would be "Manhattan" having a trip event where "Phillip Javert" was picked up at "Midtown Center" and dropped off at "Lenox Hill West".\n\n3. (NycTripEvent, involves, AvengingPassengersInstruct) - This relationship indicates that the NycTripEvent entities involve AvengingPassengersInstruct entities. An example of this would be a trip event where "Phillip Javert" was the passenger.
     """
@@ -194,6 +196,52 @@ class QuestionGeneratingAgent:
 
     def get_dialogue(self) -> Dialogue:
         return None
+
+
+def open_ai_functions(functions, question, limit=10):
+    """
+    WIP
+    will probably deprecate the use of the langchain agents and build out one agent interface from this
+    """
+    plan = f""" You are an assistant that answers questions using provided data and functions.   """
+
+    messages = [
+        {"role": "system", "content": plan},
+        {"role": "user", "content": question},
+    ]
+
+    for i in range(limit):
+        response = openai.ChatCompletion.create(
+            model=DEFAULT_LLM_MODEL,
+            messages=messages,
+            functions=functions,
+            function_call="auto",
+        )
+
+        response_message = response["choices"][0]["message"]
+        # print('thinking....', response_message.get('content'))
+
+        if response_message.get("function_call"):
+            function_name = response_message["function_call"]["name"]
+            function_to_call = eval(function_name)
+            function_args = json.loads(response_message["function_call"]["arguments"])
+            # print(f"""{function_name}('{function_args.get("text")}')""")
+            function_response = function_to_call(
+                text=function_args.get("text"),
+            )
+
+            messages.append(response_message)
+            messages.append(
+                {
+                    "role": "function",
+                    "name": function_name,
+                    "content": function_response,
+                }
+            )
+
+        if response["choices"][0]["finish_reason"] == "stop":
+            break
+    return response_message["content"]
 
 
 """

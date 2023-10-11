@@ -1,3 +1,3 @@
-from .Dialogue import Dialogue
-from .Monitor import TheLangchainCallbackHandler
+from ..spaces.Dialogue import Dialogue
+from .monitoring import TheLangchainCallbackHandler
 from .basic import *
