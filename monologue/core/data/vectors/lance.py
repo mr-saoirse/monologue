@@ -25,15 +25,15 @@ VECTOR_STORE_ROOT_URI = f"s3://{S3BUCKET}/stores/vector/v0"
 class LanceDataTable:
     def __init__(self, namespace, name, space=None, schema=None):
         self._name = name
-        db_root = f"{VECTOR_STORE_ROOT_URI}/{namespace}"
-        self._uri = f"{db_root}/{name}.lance"  #
-        self._db = lancedb.connect(db_root)
+        self._db_root = f"{VECTOR_STORE_ROOT_URI}/{namespace}"
+        self._uri = f"{self._db_root}/{name}.lance"  #
+        self._db = lancedb.connect(self._db_root)
         self._duck_client = DuckDBClient()
         try:
             self._table = self._db.open_table(self._name)
         except:
             logger.warning(
-                f"Table does not exist - creating {db_root}:{self._name} from schema {schema}"
+                f"Table does not exist - creating {self._db_root}/{self._name} from schema {schema}"
             )
             self._table = self.table_from_schema(self._name, schema=schema)
 
@@ -51,7 +51,7 @@ class LanceDataTable:
 
     @property
     def database_uri(self):
-        return VECTOR_STORE_ROOT_URI
+        return self._db_root
 
     def __repr__(self):
         return f"LanceDataSet({self._name}): {self._uri}"
@@ -75,6 +75,7 @@ class LanceDataTable:
         if len(records):
             in_list = ",".join([f'"{r[key]}"' for r in records])
             self._table.delete(f"{key} IN ({in_list})")
+
             return self._table.add(data=records, mode=mode)
         return self._dataset
 
@@ -87,5 +88,6 @@ class LanceDataTable:
         returns the polars data for the records
         """
         dataset = lance.dataset(self._uri)
+        logger.debug(f"Fetching from {self._uri}")
         limit = f"LIMIT {limit}" if limit else ""
         return self._duck_client.execute(f"SELECT * FROM dataset {limit}")
