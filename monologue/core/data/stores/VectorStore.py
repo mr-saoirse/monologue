@@ -171,10 +171,13 @@ class VectorDataStore(AbstractStore):
         The full vector text search tool provides rich narrative context. Use this tool when asked general questions of a descriptive nature
         General descriptive questions are those that are less quantitative or statistical in nature.
         This particular function should be used to answer questions about {self._entity_name}
+        You should pass in full questions as sentences with everything you want to know
 
         :param question: the question being asked
 
         """
+
+        logger.debug(question)
 
         results = self.run_search(question)
         # audit
