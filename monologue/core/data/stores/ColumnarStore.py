@@ -131,7 +131,7 @@ class ColumnarDataStore(AbstractStore):
 
     def as_function(self, question: str):
         """
-        The full columnar data tool provides statistical and quantitative results. Usually can be used to answer questions such as how much, rank, count etc.
+        The full columnar data tool provides statistical and quantitative results but also key attributes. Usually can be used to answer questions such as how much, rank, count etc. and random facts about the entity.
         this particular function should be used to answer questions about {self._entity_name}
 
         :param question: the question being asked
