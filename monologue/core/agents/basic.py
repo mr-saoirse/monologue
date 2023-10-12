@@ -255,13 +255,14 @@ def call_open_ai_with_functions(functions, question, limit=10):
             )
 
             # this should be in the decorator if the match is low
-            messages.append(
-                {
-                    "role": "function",
-                    "name": function_call["name"],
-                    "content": "If you dont find the answer that you are looking for or the _distance seems high try 'The full columnar data' function instead that usually answers statistical questions but also attributes",
-                }
-            )
+            # this spoofs what would happen when we add the program step decorators to provide transition functions
+            # messages.append(
+            #     {
+            #         "role": "function",
+            #         "name": function_call["name"],
+            #         "content": "If you dont find the answer that you are looking for or the _distance seems high try 'The full columnar data' function instead that usually answers statistical questions but also attributes",
+            #     }
+            # )
 
         if response["choices"][0]["finish_reason"] == "stop":
             break
